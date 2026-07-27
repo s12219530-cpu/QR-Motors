@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A practical used-car buying guide from QR Motors.">
+    <title>Buying Guide - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a><a href="cars.html">Cars</a><a href="dealers.html">Showroom</a><a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a><a class="user-only" href="sell-car.html">Sell Car</a><a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a><a class="active-nav" href="tips.html">Tips</a><a class="admin-only" href="admin.html">Admin</a><a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span><a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+
+<main class="editorial-page">
+    <section class="editorial-hero tips-editorial-hero">
+        <div class="editorial-hero-copy">
+            <span class="editorial-eyebrow">QR MOTORING JOURNAL · GUIDE 01</span>
+            <h1>Buy the car.<br><em>Not the problem.</em></h1>
+            <p>A clear six-step inspection guide designed to help you make a safer, smarter used-car decision.</p>
+            <div class="editorial-hero-actions">
+                <a class="editorial-primary" href="#inspection-guide">Start the inspection <b>↓</b></a>
+                <a class="editorial-secondary" href="cars.html">Browse available cars</a>
+            </div>
+        </div>
+        <div class="editorial-hero-art" aria-hidden="true">
+            <div class="hero-art-number">06</div>
+            <div class="hero-art-caption"><span></span> ESSENTIAL CHECKS</div>
+        </div>
+    </section>
+
+    <section class="guide-intro" id="inspection-guide">
+        <div>
+            <span class="section-index">01 — INSPECTION GUIDE</span>
+            <h2>Six checks before<br>you make an offer.</h2>
+        </div>
+        <p>Use this sequence in order. Begin with ownership and documentation, move through mechanical condition, then finish with value and professional verification.</p>
+    </section>
+
+    <section class="guide-grid">
+        <article class="guide-card guide-card-featured">
+            <div class="guide-card-top"><span>01</span><small>DOCUMENTS</small></div>
+            <div class="guide-icon">⌑</div>
+            <h3>Verify the legal identity</h3>
+            <p>Match the license, ownership papers, VIN, insurance details, and seller identity before discussing payment.</p>
+            <ul><li>Ownership matches seller</li><li>VIN is consistent</li><li>No missing documents</li></ul>
+        </article>
+        <article class="guide-card">
+            <div class="guide-card-top"><span>02</span><small>ENGINE</small></div>
+            <div class="guide-icon">⚙</div>
+            <h3>Inspect from a cold start</h3>
+            <p>Listen for unusual noise and check oil, coolant, smoke, leaks, vibration, and warning lights.</p>
+            <div class="risk-tag">Never inspect only after warm-up</div>
+        </article>
+        <article class="guide-card">
+            <div class="guide-card-top"><span>03</span><small>ROAD TEST</small></div>
+            <div class="guide-icon">↗</div>
+            <h3>Drive in real conditions</h3>
+            <p>Test braking, steering, transmission, suspension, acceleration, visibility, and comfort on different roads.</p>
+        </article>
+        <article class="guide-card guide-card-dark">
+            <div class="guide-card-top"><span>04</span><small>MARKET VALUE</small></div>
+            <div class="guide-icon">₪</div>
+            <h3>Price the condition, not the badge</h3>
+            <p>Compare year, mileage, trim, condition, and service history against similar cars before negotiating.</p>
+            <a href="compare.html">Open comparison tool →</a>
+        </article>
+        <article class="guide-card">
+            <div class="guide-card-top"><span>05</span><small>MILEAGE</small></div>
+            <div class="guide-icon">◴</div>
+            <h3>Check whether mileage makes sense</h3>
+            <p>Compare odometer mileage with age, interior wear, service records, tires, and previous inspection reports.</p>
+        </article>
+        <article class="guide-card guide-card-featured">
+            <div class="guide-card-top"><span>06</span><small>EXPERT CHECK</small></div>
+            <div class="guide-icon">✓</div>
+            <h3>Let a mechanic confirm it</h3>
+            <p>A trusted independent mechanic can identify hidden faults and estimate the real repair cost before payment.</p>
+            <ul><li>Computer diagnostics</li><li>Underbody inspection</li><li>Repair-cost estimate</li></ul>
+        </article>
+    </section>
+
+    <section class="inspection-panel">
+        <div class="inspection-panel-heading">
+            <span class="section-index light">02 — FINAL WALKAROUND</span>
+            <h2>Your 60-second<br>buying checklist.</h2>
+            <p>Do not transfer money until every critical item is checked.</p>
+        </div>
+        <div class="inspection-checks">
+            <label><input type="checkbox"><span><b>Documents</b><small>Ownership, license and VIN verified</small></span></label>
+            <label><input type="checkbox"><span><b>Engine</b><small>No leaks, smoke or warning lights</small></span></label>
+            <label><input type="checkbox"><span><b>Road test</b><small>Brakes, steering and gearbox tested</small></span></label>
+            <label><input type="checkbox"><span><b>Body and tires</b><small>Paint, gaps, glass and tire wear checked</small></span></label>
+            <label><input type="checkbox"><span><b>Market price</b><small>Compared with similar listings</small></span></label>
+            <label><input type="checkbox"><span><b>Mechanic report</b><small>Independent inspection completed</small></span></label>
+        </div>
+    </section>
+
+    <section class="editorial-cta">
+        <div><span>READY TO SEARCH?</span><h2>Find a car worth inspecting.</h2></div>
+        <a href="cars.html">Explore the collection <b>↗</b></a>
+    </section>
+</main>
+
+<footer><p>2026 QR Motors · Nablus, Palestine</p></footer>
+<script src="images.js"></script><script src="auth.js"></script>
+<script>requireLogin(["user", "admin"]); setupNavbar(); initializePage();</script>
+<script src="premium.js"></script>
+</body>
+</html>

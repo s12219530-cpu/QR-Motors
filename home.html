@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <p class="small-title">Nablus Car Showroom</p>
+        <h1>QR Motors</h1>
+        <p>Luxury, sport, electric, and daily cars in one modern showroom in Nablus.</p>
+
+        <div class="search-box">
+            <input id="homeCarSearch" type="search" placeholder="Search car name" aria-label="Search car name">
+            <select id="homeCarType" aria-label="Choose car type">
+                <option value="">All Types</option>
+                <option value="Luxury">Luxury Cars</option>
+                <option value="Sport">Sport Cars</option>
+                <option value="Electric">Electric Cars</option>
+                <option value="Family">Family Cars</option>
+            </select>
+            <button type="button" onclick="searchFromHome()">Search</button>
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div>
+        <h3>15+</h3>
+        <p>Car Models</p>
+    </div>
+    <div>
+        <h3>1</h3>
+        <p>Nablus Showroom</p>
+    </div>
+    <div>
+        <h3>4</h3>
+        <p>Car Categories</p>
+    </div>
+    <div>
+        <h3>24/7</h3>
+        <p>Easy Browsing</p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Browse by Brand</h2>
+
+    <div class="brand-container">
+        <a class="brand-card" href="cars.html?brand=Lamborghini">
+            <img class="brand-logo" data-img="lamborghini" alt="Lamborghini logo">
+            <p>Lamborghini</p>
+        </a>
+        <a class="brand-card" href="cars.html?brand=Ferrari">
+            <img class="brand-logo" data-img="ferrari" alt="Ferrari logo">
+            <p>Ferrari</p>
+        </a>
+        <a class="brand-card" href="cars.html?brand=Porsche">
+            <img class="brand-logo" data-img="porsche" alt="Porsche logo">
+            <p>Porsche</p>
+        </a>
+        <a class="brand-card" href="cars.html?brand=Audi">
+            <img class="brand-logo" data-img="audi" alt="Audi logo">
+            <p>Audi</p>
+        </a>
+        <a class="brand-card" href="cars.html?brand=Tesla">
+            <img class="brand-logo" data-img="tesla" alt="Tesla logo">
+            <p>Tesla</p>
+        </a>
+        <a class="brand-card" href="cars.html?brand=BMW">
+            <img class="brand-logo" data-img="bmw-logo" alt="BMW logo">
+            <p>BMW</p>
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Featured Luxury Cars</h2>
+
+    <div class="car-container">
+
+        <div class="car-card">
+            <img data-img="lamborghini-aventador" alt="Lamborghini Aventador">
+            <div class="car-info">
+                <h3>Lamborghini Aventador 2022</h3>
+                <p>Luxury | Petrol | Automatic</p>
+                <h4>1,250,000 NIS</h4>
+                <a class="details-btn" href="details.html">View Details</a>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="ferrari-488" alt="Ferrari 488">
+            <div class="car-info">
+                <h3>Ferrari 488 GTB 2020</h3>
+                <p>Sport | Petrol | Automatic</p>
+                <h4>980,000 NIS</h4>
+                <a class="details-btn" href="details.html">View Details</a>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="porsche-911" alt="Porsche 911">
+            <div class="car-info">
+                <h3>Porsche 911 Carrera 2021</h3>
+                <p>Sport | Petrol | Automatic</p>
+                <h4>620,000 NIS</h4>
+                <a class="details-btn" href="details.html">View Details</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <h2>Popular Cars</h2>
+
+    <div class="car-container">
+
+        <div class="car-card">
+            <img data-img="hyundai-tucson" alt="Hyundai Tucson">
+            <div class="car-info">
+                <h3>Hyundai Tucson 2020</h3>
+                <p>Family | Hybrid | Automatic</p>
+                <h4>85,000 NIS</h4>
+                <a class="details-btn" href="details.html">View Details</a>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="kia-sportage" alt="Kia Sportage">
+            <div class="car-info">
+                <h3>Kia Sportage 2019</h3>
+                <p>Family | Petrol | Automatic</p>
+                <h4>78,000 NIS</h4>
+                <a class="details-btn" href="details.html">View Details</a>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="tesla-model3" alt="Tesla Model 3">
+            <div class="car-info">
+                <h3>Tesla Model 3 2022</h3>
+                <p>Electric | Automatic</p>
+                <h4>150,000 NIS</h4>
+                <a class=" details-btn" href="details.html">View Details</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="section dark-section">
+    <h2>QR Motors Showroom</h2>
+
+    <div class="showroom-card">
+        <div class="showroom-image">
+            <img data-img="dealer1" alt="QR Motors Nablus">
+        </div>
+
+        <div class="showroom-info">
+            <p class="small-title dark-small">Official Showroom</p>
+            <h2>QR Motors - Nablus</h2>
+            <p>
+                One trusted showroom in Nablus for luxury, sport, electric,
+                and daily cars. Browse selected models and contact the showroom easily.
+            </p>
+
+            <a class="main-link" href="dealers.html">View Showroom</a>
+        </div>
+    </div>
+</section>
+
+<section class="section tips">
+    <h2>Before You Buy</h2>
+
+    <div class="tips-container">
+        <div class="tip-card">Check car license and ownership papers.</div>
+        <div class="tip-card">Inspect engine, tires, and brakes.</div>
+        <div class="tip-card">Compare prices before buying.</div>
+        <div class="tip-card">Test drive the car first.</div>
+    </div>
+</section>
+
+
+<section class="premium-section">
+ <div class="section-topline"><div><span class="premium-kicker">Marketplace confidence</span><h2 class="premium-heading">Built around better decisions.</h2><p class="premium-subtitle">Everything a buyer needs before visiting the showroom.</p></div></div>
+ <div class="metric-grid"><div class="metric-card"><strong>500+</strong><span>Cars explored</span></div><div class="metric-card"><strong>25</strong><span>Trusted dealer contacts</span></div><div class="metric-card"><strong>1.2K</strong><span>Buyer interactions</span></div><div class="metric-card"><strong>98%</strong><span>Positive experience</span></div></div>
+</section>
+<section class="premium-section alt"><div class="premium-inner"><div class="section-topline"><div><span class="premium-kicker">Browse your way</span><h2 class="premium-heading">Choose a body style.</h2></div></div><div class="category-grid"><a class="category-tile" href="cars.html?category=Family"><b>01</b><span>SUV</span><small>Space and comfort</small></a><a class="category-tile" href="cars.html?category=Daily"><b>02</b><span>Sedan</span><small>Daily elegance</small></a><a class="category-tile" href="cars.html?category=Sport"><b>03</b><span>Sports</span><small>Performance first</small></a><a class="category-tile" href="cars.html?fuel=Electric"><b>04</b><span>Electric</span><small>Smart mobility</small></a><a class="category-tile" href="cars.html?category=Luxury"><b>05</b><span>Luxury</span><small>Premium presence</small></a></div></div></section>
+<section class="premium-section"><div class="section-topline"><div><span class="premium-kicker">Simple process</span><h2 class="premium-heading">From search to showroom.</h2></div></div><div class="steps-line"><div class="step-item"><h3>Search</h3><p>Filter the collection by brand, type, fuel and price.</p></div><div class="step-item"><h3>Compare</h3><p>Review key specifications side by side.</p></div><div class="step-item"><h3>Request</h3><p>Send a purchase request with one click.</p></div><div class="step-item"><h3>Visit</h3><p>Receive an appointment and inspect the car.</p></div></div></section>
+<section class="premium-section alt"><div class="premium-inner"><div class="section-topline"><div><span class="premium-kicker">Customer stories</span><h2 class="premium-heading">Why drivers choose us.</h2></div></div><div class="testimonial-grid"><article class="quote-card featured"><p>“The comparison page made the final choice much easier and clearer.”</p><small>— Ahmad, Nablus</small></article><article class="quote-card"><p>“A clean experience with useful specifications.”</p><small>— Lina, Ramallah</small></article><article class="quote-card"><p>“I saved my favorites and requested a visit in minutes.”</p><small>— Kareem, Jenin</small></article></div></div></section>
+<div class="premium-cta"><div><span class="premium-kicker" style="color:var(--lime)">Ready to drive?</span><h2>Find the car that fits your next chapter.</h2></div><a href="cars.html">Explore all cars →</a></div>
+
+<footer>
+    <p>2026 QR Motors - Student Project</p>
+</footer>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    requireLogin(["user", "admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
+<script src="premium.js"></script>
+</body>
+</html>

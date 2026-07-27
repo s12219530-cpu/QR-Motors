@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+
+<section class="page-title">
+    <h1>About QR Motors</h1>
+    <p>A student web project for buying and selling cars in Palestine.</p>
+</section>
+
+<section class="about-section">
+
+    <div class="about-text">
+        <h2>Who We Are</h2>
+        <p>
+            QR Motors is a web platform designed to help users in Palestine
+            browse, compare, and sell cars easily. The website includes cars from
+            different Palestinian cities such as Nablus, Ramallah, Gaza, Hebron,
+            Jerusalem, Jenin, and Bethlehem.
+        </p>
+
+        <h2>Project Idea</h2>
+        <p>
+            The idea of this project is to make the process of finding a suitable
+            car easier by using organized pages, car filters, featured cars,
+            trusted dealers, comparison tools, and an admin dashboard.
+        </p>
+
+        <h2>Project Goals</h2>
+        <p>
+            The project aims to provide a simple, organized, and user-friendly
+            website where users can explore cars by city, brand, price, year,
+            fuel type, and transmission.
+        </p>
+    </div>
+
+    <div class="about-boxes">
+        <div class="about-box">
+            <h3>Easy Search</h3>
+            <p>Users can search cars by name, city, brand, and fuel type.</p>
+        </div>
+
+        <div class="about-box">
+            <h3>Compare Cars</h3>
+            <p>Users can compare two cars before making a decision.</p>
+        </div>
+
+        <div class="about-box">
+            <h3>Admin Control</h3>
+            <p>The admin can manage cars, requests, dealers, and messages.</p>
+        </div>
+
+        <div class="about-box">
+            <h3>Trusted Dealers</h3>
+            <p>The website shows selected car dealers from different cities.</p>
+        </div>
+    </div>
+
+</section>
+
+<section class="mission-section">
+    <h2>Our Mission</h2>
+    <p>
+        To create a modern and simple car marketplace that helps people in Palestine
+        find the right car with clear information and organized features.
+    </p>
+</section>
+
+<section class="premium-section"><span class="premium-kicker">Project timeline</span><h2 class="premium-heading">From idea to working platform.</h2><div class="steps-line"><div class="step-item"><h3>Research</h3><p>Defined buyer and admin journeys.</p></div><div class="step-item"><h3>Design</h3><p>Built a consistent automotive interface.</p></div><div class="step-item"><h3>Develop</h3><p>Connected pages through JavaScript and localStorage.</p></div><div class="step-item"><h3>Improve</h3><p>Added filtering, comparison and responsive states.</p></div></div></section><section class="premium-section alt"><div class="premium-inner"><span class="premium-kicker">Technology</span><h2 class="premium-heading">The stack behind QR Motors.</h2><div class="metric-grid"><div class="metric-card"><strong>HTML</strong><span>Semantic structure</span></div><div class="metric-card"><strong>CSS</strong><span>Responsive interface</span></div><div class="metric-card"><strong>JS</strong><span>Interactive workflows</span></div><div class="metric-card"><strong>LS</strong><span>LocalStorage demo data</span></div></div></div></section><footer>
+    <p>2026 QR Motors - About Page</p>
+</footer>
+
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    requireLogin(["user", "admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
+<script src="premium.js"></script>
+</body>
+</html>

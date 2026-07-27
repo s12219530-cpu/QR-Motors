@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="QR Motors — selected cars and private showroom access in Nablus.">
+    <title>QR Motors — Nablus Car Showroom</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="showcase-login-body">
+
+<div class="showcase-page">
+    <header class="showcase-header">
+        <a href="index.html" class="showcase-brand" aria-label="QR Motors home">
+            <span class="showcase-monogram" aria-hidden="true">
+                <span class="monogram-q">Q</span>
+                <span class="monogram-r">R</span>
+            </span>
+            <span class="showcase-brand-copy">
+                <strong>QR MOTORS</strong>
+                <small>NABLUS CAR SHOWROOM</small>
+            </span>
+        </a>
+
+        <div class="showcase-header-meta">
+            <span class="header-place">NABLUS · PALESTINE</span>
+            <span class="showroom-status"><i></i> SHOWROOM ONLINE</span>
+        </div>
+    </header>
+
+    <main class="showcase-main">
+        <section class="showcase-gallery" aria-label="Featured cars">
+            <div class="featured-frame">
+                <img
+                    id="featuredShowcaseImage"
+                    data-img="lamborghini-aventador"
+                    alt="Lamborghini Aventador 2022"
+                >
+                <div class="featured-overlay"></div>
+                <div class="featured-grid-lines" aria-hidden="true"></div>
+
+                <div class="featured-copy">
+                    <p class="featured-kicker"><span></span> THE QR SELECTION</p>
+                    <h1>Cars that make<br><em>an entrance.</em></h1>
+                    <p class="featured-description">
+                        Luxury, sport, electric, and everyday cars — selected for one
+                        modern showroom experience in Nablus.
+                    </p>
+                    <button type="button" class="featured-cta" onclick="showUserBox()">
+                        <span>Explore as customer</span>
+                        <b>↗</b>
+                    </button>
+                </div>
+
+                <div class="featured-car-info">
+                    <span id="featuredCategory">ICON 01 · LUXURY SPORT</span>
+                    <h2 id="featuredName">Lamborghini Aventador 2022</h2>
+                    <p id="featuredMeta">Petrol · Automatic · 12,000 km</p>
+                </div>
+
+                <button type="button" class="gallery-next" id="galleryNext" aria-label="Show next car">→</button>
+            </div>
+
+            <div class="showcase-thumbnails" aria-label="Choose a featured car">
+                <button
+                    type="button"
+                    class="showcase-thumb active"
+                    data-image="lamborghini-aventador"
+                    data-name="Lamborghini Aventador 2022"
+                    data-category="ICON 01 · LUXURY SPORT"
+                    data-meta="Petrol · Automatic · 12,000 km"
+                    aria-label="Show Lamborghini Aventador"
+                >
+                    <img data-img="lamborghini-aventador" alt="Lamborghini Aventador">
+                    <span><b>01</b><small>Aventador</small></span>
+                </button>
+
+                <button
+                    type="button"
+                    class="showcase-thumb"
+                    data-image="ferrari-488"
+                    data-name="Ferrari 488 GTB 2020"
+                    data-category="ICON 02 · PERFORMANCE"
+                    data-meta="Petrol · Automatic · 18,000 km"
+                    aria-label="Show Ferrari 488 GTB"
+                >
+                    <img data-img="ferrari-488" alt="Ferrari 488 GTB">
+                    <span><b>02</b><small>Ferrari 488</small></span>
+                </button>
+
+                <button
+                    type="button"
+                    class="showcase-thumb"
+                    data-image="porsche-911"
+                    data-name="Porsche 911 Carrera 2021"
+                    data-category="ICON 03 · TIMELESS SPORT"
+                    data-meta="Petrol · Automatic · 25,000 km"
+                    aria-label="Show Porsche 911 Carrera"
+                >
+                    <img data-img="porsche-911" alt="Porsche 911 Carrera">
+                    <span><b>03</b><small>Porsche 911</small></span>
+                </button>
+
+                <button
+                    type="button"
+                    class="showcase-thumb"
+                    data-image="range-rover-sport"
+                    data-name="Range Rover Sport 2020"
+                    data-category="ICON 04 · LUXURY SUV"
+                    data-meta="Diesel · Automatic · 55,000 km"
+                    aria-label="Show Range Rover Sport"
+                >
+                    <img data-img="range-rover-sport" alt="Range Rover Sport">
+                    <span><b>04</b><small>Range Rover</small></span>
+                </button>
+            </div>
+        </section>
+
+        <aside class="showcase-access" aria-label="Account access">
+            <div class="access-watermark" aria-hidden="true">QR</div>
+
+            <div id="choiceBox" class="showcase-access-view">
+                <div class="access-heading">
+                    <p>PRIVATE SHOWROOM ACCESS</p>
+                    <h2>Welcome to<br>QR Motors.</h2>
+                    <span>Choose your entrance to continue.</span>
+                </div>
+
+                <div class="access-list">
+                    <button type="button" class="entrance-card" onclick="showUserBox()">
+                        <span class="entrance-index">01</span>
+                        <span class="entrance-icon" aria-hidden="true">
+                            <svg viewBox="0 0 48 48">
+                                <path d="M7 29h34l-4-11a5 5 0 0 0-4.7-3.3H15.7A5 5 0 0 0 11 18L7 29Z"></path>
+                                <path d="M6 29h36v8a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4v-8Z"></path>
+                                <circle cx="14" cy="37" r="3"></circle>
+                                <circle cx="34" cy="37" r="3"></circle>
+                            </svg>
+                        </span>
+                        <span class="entrance-copy">
+                            <strong>Customer entrance</strong>
+                            <small>Browse, compare, save favorites, and request a car.</small>
+                        </span>
+                        <span class="entrance-arrow">↗</span>
+                    </button>
+
+                    <button type="button" class="entrance-card admin-entrance" onclick="showAdminBox()">
+                        <span class="entrance-index">02</span>
+                        <span class="entrance-icon" aria-hidden="true">
+                            <svg viewBox="0 0 48 48">
+                                <path d="M24 7 29 11l6-.4 1.8 5.7 5 3.2-2.4 5.5 2.4 5.5-5 3.2-1.8 5.7-6-.4-5 4-5-4-6 .4-1.8-5.7-5-3.2L8.6 25l-2.4-5.5 5-3.2L13 10.6l6 .4 5-4Z"></path>
+                                <circle cx="24" cy="25" r="7"></circle>
+                            </svg>
+                        </span>
+                        <span class="entrance-copy">
+                            <strong>Admin entrance</strong>
+                            <small>Manage users, requests, messages, and appointments.</small>
+                        </span>
+                        <span class="entrance-arrow">↗</span>
+                    </button>
+                </div>
+
+                <div class="access-signature">
+                    <div><b>15+</b><span>selected cars</span></div>
+                    <div><b>01</b><span>Nablus showroom</span></div>
+                    <div><b>24/7</b><span>digital access</span></div>
+                </div>
+            </div>
+
+            <div id="userBox" class="showcase-access-view showcase-auth-view hidden">
+                <button type="button" class="access-back" onclick="showChoices()">← Back to entrances</button>
+
+                <div class="access-heading compact-heading">
+                    <p>CUSTOMER ACCOUNT</p>
+                    <h2>Open your<br>showroom.</h2>
+                    <span>Sign in to browse and save your selected cars.</span>
+                </div>
+
+                <div id="userLoginForm" class="showcase-form">
+                    <p id="userLoginMessage" class="form-message hidden" role="alert"></p>
+                    <label for="userLoginName">
+                        <span>Username</span>
+                        <input type="text" id="userLoginName" placeholder="Enter your username" autocomplete="username">
+                    </label>
+                    <label for="userLoginPassword">
+                        <span>Password</span>
+                        <input type="password" id="userLoginPassword" placeholder="Enter your password" autocomplete="current-password">
+                    </label>
+                    <button type="button" class="showcase-submit" onclick="loginUser()">
+                        <span>Enter my account</span><b>→</b>
+                    </button>
+                    <p class="showcase-switch">New customer? <button type="button" onclick="showRegisterForm()">Create an account</button></p>
+                </div>
+
+                <div id="userRegisterForm" class="showcase-form hidden">
+                    <p id="registerMessage" class="form-message hidden" role="alert"></p>
+                    <label for="registerName">
+                        <span>New username</span>
+                        <input type="text" id="registerName" placeholder="Choose a username" autocomplete="username">
+                    </label>
+                    <label for="registerPassword">
+                        <span>New password</span>
+                        <input type="password" id="registerPassword" placeholder="Create a password" autocomplete="new-password">
+                    </label>
+                    <button type="button" class="showcase-submit" onclick="registerUser()">
+                        <span>Create my account</span><b>→</b>
+                    </button>
+                    <p class="showcase-switch">Already registered? <button type="button" onclick="showLoginForm()">Return to login</button></p>
+                </div>
+            </div>
+
+            <div id="adminBox" class="showcase-access-view showcase-auth-view hidden">
+                <button type="button" class="access-back" onclick="showChoices()">← Back to entrances</button>
+
+                <div class="access-heading compact-heading">
+                    <p>ADMINISTRATION</p>
+                    <h2>Showroom<br>control.</h2>
+                    <span>Authorized access to QR Motors management.</span>
+                </div>
+
+                <div class="showcase-form">
+                    <p id="adminLoginMessage" class="form-message hidden" role="alert"></p>
+                    <label for="adminName">
+                        <span>Admin username</span>
+                        <input type="text" id="adminName" placeholder="Admin username" autocomplete="username">
+                    </label>
+                    <label for="adminPassword">
+                        <span>Admin password</span>
+                        <input type="password" id="adminPassword" placeholder="Admin password" autocomplete="current-password">
+                    </label>
+                    <button type="button" class="showcase-submit admin-submit" onclick="loginAdmin()">
+                        <span>Open dashboard</span><b>→</b>
+                    </button>
+
+                    <div class="showcase-demo">
+                        <span>DEMO ACCOUNT</span>
+                        <p><b>Username</b> admin</p>
+                        <p><b>Password</b> QRMotors@123</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="showcase-footer">
+        <span>© 2026 QR MOTORS</span>
+        <span>SELECT · REQUEST · VISIT</span>
+    </footer>
+</div>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    (function () {
+        const thumbs = Array.from(document.querySelectorAll(".showcase-thumb"));
+        const featuredImage = document.getElementById("featuredShowcaseImage");
+        const featuredName = document.getElementById("featuredName");
+        const featuredCategory = document.getElementById("featuredCategory");
+        const featuredMeta = document.getElementById("featuredMeta");
+        const nextButton = document.getElementById("galleryNext");
+        let activeIndex = 0;
+
+        function selectCar(index) {
+            const button = thumbs[index];
+            if (!button || !featuredImage) return;
+
+            activeIndex = index;
+            thumbs.forEach((thumb, thumbIndex) => {
+                thumb.classList.toggle("active", thumbIndex === activeIndex);
+            });
+
+            featuredImage.classList.add("is-changing");
+            window.setTimeout(function () {
+                featuredImage.setAttribute("data-img", button.dataset.image);
+                featuredImage.alt = button.dataset.name;
+                if (typeof loadFlexibleImage === "function") loadFlexibleImage(featuredImage);
+                featuredName.textContent = button.dataset.name;
+                featuredCategory.textContent = button.dataset.category;
+                featuredMeta.textContent = button.dataset.meta;
+                featuredImage.classList.remove("is-changing");
+            }, 180);
+        }
+
+        thumbs.forEach((thumb, index) => {
+            thumb.addEventListener("click", function () {
+                selectCar(index);
+            });
+        });
+
+        nextButton?.addEventListener("click", function () {
+            selectCar((activeIndex + 1) % thumbs.length);
+        });
+    })();
+</script>
+
+<script src="premium.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sell Car - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<body><header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+<section class="page-title"><h1>Sell Your Car</h1><p>Your submission will appear in the admin dashboard under your username.</p></section>
+<section class="form-section"><form id="sellCarForm" onsubmit="submitSellCar(event)">
+<input name="carName" type="text" placeholder="Car Name" required><input name="brand" type="text" placeholder="Brand"><input name="model" type="text" placeholder="Model"><input name="year" type="number" placeholder="Year"><input name="price" type="number" placeholder="Price (NIS)" required><input name="city" type="text" placeholder="City">
+<select name="fuel"><option value="">Fuel Type</option><option>Petrol</option><option>Diesel</option><option>Hybrid</option><option>Electric</option></select>
+<select name="transmission"><option value="">Transmission</option><option>Automatic</option><option>Manual</option></select>
+<input name="mileage" type="text" placeholder="Mileage"><input name="phone" type="text" placeholder="Phone Number" required><textarea name="description" placeholder="Car Description"></textarea><button type="submit">Submit Car to Admin</button>
+</form></section><footer><p>2026 QR Motors - Sell Car</p></footer>
+<script src="auth.js"></script><script>requireLogin(["user"]); setupNavbar(); initializePage();</script><script src="premium.js"></script>
+</body></html>

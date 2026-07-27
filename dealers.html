@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Motors Showroom</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+
+<section class="page-title">
+    <h1>QR Motors Showroom</h1>
+    <p>One trusted car showroom in Nablus for luxury, sport, electric, and daily cars.</p>
+</section>
+
+<section class="showroom-section">
+
+    <div class="showroom-card">
+        <div class="showroom-image">
+            <img data-img="dealer1" alt="QR Motors Nablus">
+        </div>
+
+        <div class="showroom-info">
+            <p class="small-title dark-small">Official Showroom</p>
+            <h2>QR Motors - Nablus</h2>
+            <p>
+                QR Motors is a modern car showroom located in Nablus.
+                It offers selected cars such as Lamborghini, Ferrari, Porsche,
+                Tesla, BMW, Mercedes, Hyundai, Toyota, and more.
+            </p>
+
+            <div class="showroom-details">
+                <div><b>City:</b> Nablus</div>
+                <div><b>Cars:</b> 15 Models</div>
+                <div><b>Specialty:</b> Luxury & Daily Cars</div>
+                <div><b>Phone:</b> 0567147697</div>
+            </div>
+
+            <button type="button" onclick="logNamedAction('Showroom Contact', 'Requested contact with QR Motors showroom')">Contact Showroom</button>
+        </div>
+    </div>
+
+</section>
+
+<section class="section">
+    <h2>Showroom Highlights</h2>
+
+    <div class="tips-container">
+        <div class="tip-card">Luxury Cars</div>
+        <div class="tip-card">Sport Cars</div>
+        <div class="tip-card">Electric Cars</div>
+        <div class="tip-card">Family Cars</div>
+    </div>
+</section>
+
+<section class="premium-section"><span class="premium-kicker">Dealer services</span><h2 class="premium-heading">More than a showroom.</h2><div class="value-grid" style="grid-template-columns:repeat(3,1fr)"><div class="metric-card"><strong>4.9★</strong><span>Customer rating</span></div><div class="metric-card"><strong>15+</strong><span>Available models</span></div><div class="metric-card"><strong>6 days</strong><span>Open every week</span></div></div></section><div class="premium-cta"><div><span class="premium-kicker" style="color:var(--lime)">Plan a visit</span><h2>See your selected car in person.</h2></div><a href="cars.html">Choose a car →</a></div><footer>
+    <p>2026 QR Motors - Nablus Showroom</p>
+</footer>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    requireLogin(["user", "admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
+<script src="premium.js"></script>
+</body>
+</html>

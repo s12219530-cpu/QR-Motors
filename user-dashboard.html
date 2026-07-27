@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Activity - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+<section class="user-hero"><h1>My Activity</h1><p>Your private activity, purchase requests, and showroom appointments.</p></section>
+<section id="userDashboardRoot" class="admin-dashboard">
+    <div class="stats-container">
+        <div class="stat-card"><h3>My Actions</h3><p id="myActivityCount">0</p></div>
+        <div class="stat-card"><h3>Purchase Requests</h3><p id="myRequestCount">0</p></div>
+        <div class="stat-card"><h3>Appointments</h3><p id="myAppointmentCount">0</p></div>
+        <div class="stat-card"><h3>Favorites</h3><p id="myFavoriteCount">0</p></div>
+    </div>
+    <div class="admin-section"><h2>My Purchase Requests & Appointments</h2><div id="myRequestsList"></div></div>
+    <div class="admin-section"><h2>My Activity History</h2><div id="myActivitiesList"></div></div>
+</section>
+<footer><p>2026 QR Motors - My Activity</p></footer>
+<script src="auth.js"></script><script>requireLogin(["user"]); setupNavbar(); initializePage();</script>
+<script src="premium.js"></script>
+</body></html>

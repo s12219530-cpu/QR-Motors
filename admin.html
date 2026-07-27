@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Dashboard - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+<section class="admin-hero"><h1>Admin Dashboard</h1><p>View all users, all activity, purchase requests, and assign showroom appointments.</p></section>
+<section id="adminDashboardRoot" class="admin-dashboard">
+    <div class="stats-container">
+        <div class="stat-card"><h3>Registered Users</h3><p id="adminUsersCount">0</p></div>
+        <div class="stat-card"><h3>User Activities</h3><p id="adminActivitiesCount">0</p></div>
+        <div class="stat-card"><h3>Pending Purchases</h3><p id="adminPendingCount">0</p></div>
+        <div class="stat-card"><h3>Appointments</h3><p id="adminAppointmentsCount">0</p></div>
+    </div>
+    <div class="admin-section"><h2>Purchase Requests & Appointments</h2><div id="purchaseRequestsList"></div></div>
+    <div class="admin-section"><h2>All User Activity</h2><p class="section-help">The admin sees the complete history for every registered user.</p><div id="allActivitiesList"></div></div>
+    <div class="admin-section"><h2>Registered Users</h2><div id="registeredUsersList"></div></div>
+    <div class="admin-section"><h2>Sell-Car Requests</h2><div id="sellRequestsList"></div></div>
+    <div class="admin-section"><h2>User Messages</h2><div id="messagesList"></div></div>
+<div class="admin-section"><h2>Management Shortcuts</h2><div class="toolbar-upgrade"><button type="button" onclick="exportInventory()">⇩ Export Inventory</button><button type="button" onclick="renderAdminDashboard(); qrToast('Dashboard refreshed')">↻ Refresh</button></div></div></section>
+<footer><p>2026 QR Motors - Admin Panel</p></footer>
+<script src="auth.js"></script><script>requireLogin(["admin"]); setupNavbar(); initializePage();</script>
+<script src="premium.js"></script>
+</body></html>

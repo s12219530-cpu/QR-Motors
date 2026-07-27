@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Cars - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+
+<section class="page-title">
+    <h1>Compare Cars</h1>
+    <p>Compare two cars side by side to choose the best option.</p>
+</section>
+
+<section class="compare-section">
+    <div class="compare-select-box">
+        <label>First car<select id="compareCarOne" aria-label="Select first car"></select></label>
+        <label>Second car<select id="compareCarTwo" aria-label="Select second car"></select></label>
+        <button id="compareButton" type="button">Compare</button>
+    </div>
+    <p id="compareError" class="form-message error-message hidden" role="alert"></p>
+    <div id="compareResult" aria-live="polite"></div>
+</section>
+
+
+<section class="premium-section alt"><div class="premium-inner"><span class="premium-kicker">Decision support</span><h2 class="premium-heading">How to read your comparison.</h2><div class="compare-highlights"><div class="compare-pick"><b>Best price</b><p>Choose the lower total cost when budget is the priority.</p></div><div class="compare-pick"><b>Best performance</b><p>Focus on category, transmission and intended use.</p></div><div class="compare-pick"><b>Best efficiency</b><p>Electric and hybrid options reduce fuel dependence.</p></div></div></div></section>
+<footer>
+    <p>2026 QR Motors - Compare Cars</p>
+</footer>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    requireLogin(["user", "admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
+<script src="premium.js"></script>
+</body>
+</html>

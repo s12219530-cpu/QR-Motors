@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Favorites - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+<section class="page-title"><h1>My Favorite Cars</h1><p>Only the cars saved by the logged-in user are shown here.</p></section>
+<section class="section"><div id="favoritesList" class="car-container"></div></section>
+<section class="empty-box"><h2>Want to save more cars?</h2><p>Open the Cars page and select Favorite.</p><a href="cars.html">Browse Cars</a></section>
+<footer><p>2026 QR Motors - Favorites</p></footer>
+<script src="images.js"></script><script src="auth.js"></script><script>requireLogin(["user"]); setupNavbar(); initializePage();</script>
+<script src="premium.js"></script>
+</body></html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+
+<section class="page-title">
+    <h1>QR Motors Cars</h1>
+    <p>Browse 15 selected cars available in our Nablus showroom.</p>
+</section>
+
+<section class="section">
+
+    <div class="filters catalog-controls" aria-label="Car catalog filters">
+        <input id="carSearch" type="search" placeholder="Search by car name" aria-label="Search by car name">
+        <select id="brandFilter" aria-label="Filter by brand">
+            <option value="">All Brands</option>
+            <option>Lamborghini</option>
+            <option>Ferrari</option>
+            <option>Porsche</option>
+            <option>Audi</option>
+            <option>BMW</option>
+            <option>Mercedes</option>
+            <option>Tesla</option>
+            <option>Toyota</option>
+            <option>Range Rover</option>
+            <option>Nissan</option>
+            <option>Chevrolet</option>
+            <option>Ford</option>
+            <option>Hyundai</option>
+            <option>Kia</option>
+            <option>Volkswagen</option>
+        </select>
+        <select id="categoryFilter" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            <option>Luxury</option>
+            <option>Sport</option>
+            <option>Electric</option>
+            <option>Family</option>
+            <option>Daily</option>
+        </select>
+        <select id="fuelFilter" aria-label="Filter by fuel">
+            <option value="">All Fuel Types</option>
+            <option>Petrol</option>
+            <option>Diesel</option>
+            <option>Hybrid</option>
+            <option>Electric</option>
+        </select>
+        <select id="sortCars" aria-label="Sort cars">
+            <option value="default">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="year-desc">Year: Newest First</option>
+            <option value="year-asc">Year: Oldest First</option>
+            <option value="name-asc">Name: A to Z</option>
+        </select>
+        <button id="resetFilters" type="button" class="secondary-btn">Reset</button>
+    </div>
+    <div class="catalog-summary" aria-live="polite">
+        <p id="catalogResultCount">15 cars found</p>
+    </div>
+
+    <div id="carCatalog" class="car-container big-car-list">
+
+        <div class="car-card">
+            <img data-img="lamborghini-aventador" alt="Lamborghini Aventador">
+            <div class="car-info">
+                <h3>Lamborghini Aventador 2022</h3>
+                <p>Type: Luxury Sport</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 12,000 km</p>
+                <h4>1,250,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="ferrari-488" alt="Ferrari 488">
+            <div class="car-info">
+                <h3>Ferrari 488 GTB 2020</h3>
+                <p>Type: Luxury Sport</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 18,000 km</p>
+                <h4>980,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="porsche-911" alt="Porsche 911">
+            <div class="car-info">
+                <h3>Porsche 911 Carrera 2021</h3>
+                <p>Type: Sport</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 25,000 km</p>
+                <h4>620,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="audi-rs7" alt="Audi RS7">
+            <div class="car-info">
+                <h3>Audi RS7 2021</h3>
+                <p>Type: Luxury Sedan</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 30,000 km</p>
+                <h4>430,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="range-rover-sport" alt="Range Rover Sport">
+            <div class="car-info">
+                <h3>Range Rover Sport 2020</h3>
+                <p>Type: Luxury SUV</p>
+                <p>Fuel: Diesel</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 55,000 km</p>
+                <h4>360,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="tesla-model3" alt="Tesla Model 3">
+            <div class="car-info">
+                <h3>Tesla Model 3 2022</h3>
+                <p>Type: Electric</p>
+                <p>Fuel: Electric</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 22,000 km</p>
+                <h4>150,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="nissan-gtr" alt="Nissan GT-R">
+            <div class="car-info">
+                <h3>Nissan GT-R 2019</h3>
+                <p>Type: Sport</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 40,000 km</p>
+                <h4>390,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="chevrolet-camaro" alt="Chevrolet Camaro">
+            <div class="car-info">
+                <h3>Chevrolet Camaro 2020</h3>
+                <p>Type: Sport</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 45,000 km</p>
+                <h4>210,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="ford-mustang" alt="Ford Mustang">
+            <div class="car-info">
+                <h3>Ford Mustang GT 2021</h3>
+                <p>Type: Sport</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 35,000 km</p>
+                <h4>260,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="hyundai-tucson" alt="Hyundai Tucson">
+            <div class="car-info">
+                <h3>Hyundai Tucson 2020</h3>
+                <p>Type: Family SUV</p>
+                <p>Fuel: Hybrid</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 70,000 km</p>
+                <h4>85,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="kia-sportage" alt="Kia Sportage">
+            <div class="car-info">
+                <h3>Kia Sportage 2019</h3>
+                <p>Type: Family SUV</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 80,000 km</p>
+                <h4>78,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="toyota-corolla" alt="Toyota Corolla">
+            <div class="car-info">
+                <h3>Toyota Corolla 2021</h3>
+                <p>Type: Daily Car</p>
+                <p>Fuel: Hybrid</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 50,000 km</p>
+                <h4>70,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="bmw-320i" alt="BMW 320i">
+            <div class="car-info">
+                <h3>BMW 320i 2018</h3>
+                <p>Type: Luxury Sedan</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 95,000 km</p>
+                <h4>95,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="mercedes-cclass" alt="Mercedes C-Class">
+            <div class="car-info">
+                <h3>Mercedes C-Class 2020</h3>
+                <p>Type: Luxury Sedan</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Automatic</p>
+                <p>Mileage: 60,000 km</p>
+                <h4>140,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img data-img="volkswagen-golf" alt="Volkswagen Golf">
+            <div class="car-info">
+                <h3>Volkswagen Golf 2017</h3>
+                <p>Type: Daily Car</p>
+                <p>Fuel: Petrol</p>
+                <p>Gear: Manual</p>
+                <p>Mileage: 110,000 km</p>
+                <h4>62,000 NIS</h4>
+                <a class="details-btn" href="details.html">Details</a>
+                <button class="favorite-btn">♡ Favorite</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="catalogEmpty" class="empty-state hidden"><h3>No cars found</h3><p>Try changing the search or filters.</p></div>
+    <div id="catalogPagination" class="pagination" aria-label="Catalog pages"></div>
+</section>
+
+<footer>
+    <p>2026 QR Motors - Cars Page</p>
+</footer>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    requireLogin(["user", "admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
+<script src="premium.js"></script>
+</body>
+</html>

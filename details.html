@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Details - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h2>QR Motors</h2>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="cars.html">Cars</a>
+        <a href="dealers.html">Showroom</a>
+        <a href="compare.html">Compare</a>
+        <a class="user-only" href="favorites.html">Favorites</a>
+        <a class="user-only" href="sell-car.html">Sell Car</a>
+        <a class="user-only" href="user-dashboard.html">My Activity</a>
+        <a href="about.html">About</a>
+        <a href="tips.html">Tips</a>
+        <a class="admin-only" href="admin.html">Admin</a>
+        <a href="contact.html">Contact</a>
+        <span id="loggedUserName" class="user-box"></span>
+        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+</header>
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="home.html">Home</a><span>›</span><a href="cars.html">Cars</a><span>›</span><span id="breadcrumbCar">Car Details</span></nav>
+<section class="page-title">
+    <h1>Car Details</h1>
+    <p>Review the selected car and send a purchase request to the admin.</p>
+</section>
+<section class="details-section">
+    <div class="details-layout">
+        <div class="details-image-box">
+            <img id="detailImage" data-img="lamborghini-aventador" alt="Selected car">
+        </div>
+        <div class="details-info-box">
+            <p class="small-title dark-small">Available at QR Motors</p>
+            <h2 id="detailCarName">Lamborghini Aventador 2022</h2>
+            <h3 id="detailPrice" class="price-badge">1,250,000 NIS</h3>
+            <p>Send a purchase request first. The admin will review it and assign a date and time for your showroom visit.</p>
+            <div class="spec-grid">
+                <div><b>Brand:</b> <span id="detailBrand">Lamborghini</span></div>
+                <div><b>Category:</b> <span id="detailCategory">Luxury Sport</span></div>
+                <div><b>Fuel:</b> <span id="detailFuel">Petrol</span></div>
+                <div><b>Transmission:</b> <span id="detailGear">Automatic</span></div>
+                <div><b>Mileage:</b> <span id="detailMileage">12,000 km</span></div>
+                <div><b>Showroom:</b> QR Motors - Nablus</div>
+            </div>
+            <div class="details-actions">
+                <button id="buyRequestButton" class="buy-btn">Request to Buy</button>
+                <button id="detailFavoriteButton" class="favorite-btn">♡ Add to Favorite</button>
+                <a class="details-btn" href="user-dashboard.html">My Requests</a>
+                <a class="details-btn" href="compare.html">Compare</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-heading-row"><div><p class="small-title dark-small">CUSTOMER GUIDE</p><h2>Why choose this car?</h2></div></div>
+    <div class="process-grid">
+        <div class="process-card"><b>✓</b><h3>Verified listing</h3><p>Clear specifications and showroom availability.</p></div>
+        <div class="process-card"><b>✓</b><h3>Easy comparison</h3><p>Compare the model with another car before requesting.</p></div>
+        <div class="process-card"><b>✓</b><h3>Scheduled visit</h3><p>The admin confirms a convenient showroom appointment.</p></div>
+    </div>
+</section>
+<section class="section related-section">
+    <h2>Related Cars</h2>
+    <div id="relatedCars" class="car-container"></div>
+</section>
+<section class="section notice-section">
+    <h2>What happens next?</h2>
+    <div class="process-grid">
+        <div class="process-card"><b>1</b><h3>Send request</h3><p>Your request is saved under your username.</p></div>
+        <div class="process-card"><b>2</b><h3>Admin reviews</h3><p>The admin sees the request in the dashboard.</p></div>
+        <div class="process-card"><b>3</b><h3>Appointment</h3><p>The assigned showroom date appears in My Activity.</p></div>
+    </div>
+</section>
+
+<section class="detail-upgrade-grid">
+ <div><span class="premium-kicker">Included features</span><h2 class="premium-heading" style="font-size:42px">Comfort, safety & technology.</h2><div class="feature-icon-grid"><div class="feature-icon"><b>◉</b><span>Rear camera</span></div><div class="feature-icon"><b>✦</b><span>Premium interior</span></div><div class="feature-icon"><b>⌁</b><span>Smart connectivity</span></div><div class="feature-icon"><b>⚙</b><span>Automatic transmission</span></div><div class="feature-icon"><b>◈</b><span>Safety assistance</span></div><div class="feature-icon"><b>☼</b><span>Climate control</span></div></div><div class="seller-card" style="margin-top:20px"><span class="premium-kicker">Verified seller</span><h3>QR Motors — Nablus</h3><p class="premium-subtitle">Open Saturday–Thursday, 9:00–18:00. All visits are confirmed through the admin dashboard.</p><div class="toolbar-upgrade"><button onclick="qrToast('Showroom call request saved')">Call showroom</button><button onclick="qrToast('Location opened')">Get directions</button></div></div></div>
+ <div id="financeCalculator" class="finance-card"><span class="premium-kicker" style="color:var(--lime)">Finance estimator</span><h2 style="font:500 38px Georgia,serif">Estimate monthly payment</h2><div class="finance-grid"><label>Car price<input id="finPrice" type="number" value="125000"></label><label>Down payment<input id="finDown" type="number" value="25000"></label><label>Loan period<select id="finMonths"><option value="24">24 months</option><option value="36" selected>36 months</option><option value="48">48 months</option><option value="60">60 months</option></select></label><label>Annual rate<input id="finRate" type="number" step="0.1" value="5.5"></label></div><div class="finance-result"><span>Estimated monthly payment</span><strong id="monthlyPayment">—</strong><small>Illustrative estimate only.</small></div></div>
+</section>
+<section class="premium-section alt"><div class="premium-inner"><span class="premium-kicker">Questions answered</span><h2 class="premium-heading">Before requesting the car.</h2><div class="faq-list"><details><summary>Can I inspect the car before buying?</summary><p>Yes. Submit a request and the admin will schedule a showroom appointment.</p></details><details><summary>Is the displayed price final?</summary><p>The price is the current listing price and can be confirmed with the showroom.</p></details><details><summary>Can I compare this car?</summary><p>Use the Compare page to review specifications against another model.</p></details></div></div></section>
+
+<footer><p>2026 QR Motors - Details Page</p></footer>
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>requireLogin(["user", "admin"]); setupNavbar(); initializePage();</script>
+<script src="premium.js"></script>
+</body>
+</html>
