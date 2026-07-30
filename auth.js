@@ -1,8 +1,5 @@
 "use strict";
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "QRMotors@123";
-
 const STORAGE_KEYS = {
     users: "users",
     currentUser: "currentUser",
@@ -110,80 +107,107 @@ function showLoginForm() {
     document.getElementById("userLoginForm")?.classList.remove("hidden");
 }
 
-function registerUser() {
+async function registerUser() {
     const username = document.getElementById("registerName")?.value.trim() || "";
-    const password = document.getElementById("registerPassword")?.value.trim() || "";
+    const password = document.getElementById("registerPassword")?.value || "";
 
     clearFormMessage("registerMessage");
+
     if (!username || !password) {
         showFormMessage("registerMessage", "Please enter username and password.");
         return;
     }
-    if (username.length < 3) {
-        showFormMessage("registerMessage", "Username must contain at least 3 characters.");
-        return;
-    }
-    if (password.length < 6) {
-        showFormMessage("registerMessage", "Password must contain at least 6 characters.");
-        return;
-    }
-    if (username.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
-        showFormMessage("registerMessage", "This username is reserved.");
-        return;
-    }
 
-    const users = getUsers();
-    if (users.some(user => user.username.toLowerCase() === username.toLowerCase())) {
-        showFormMessage("registerMessage", "This username already exists.");
-        return;
+    try {
+        const response = await fetch("register.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            showFormMessage("registerMessage", result.message);
+            return;
+        }
+
+        showFormMessage("registerMessage", result.message, "success");
+        document.getElementById("registerName").value = "";
+        document.getElementById("registerPassword").value = "";
+        setTimeout(showLoginForm, 1000);
+    } catch (error) {
+        showFormMessage("registerMessage", "Cannot connect to the server.");
     }
-
-    users.push({ username, password, role: "user", createdAt: new Date().toISOString() });
-    saveUsers(users);
-    addActivityFor(username, "Account", "Created a new user account");
-
-    showFormMessage("registerMessage", "Account created successfully. You can sign in now.", "success");
-    document.getElementById("registerName").value = "";
-    document.getElementById("registerPassword").value = "";
-    showLoginForm();
 }
 
-function loginUser() {
+async function loginUser() {
     const username = document.getElementById("userLoginName")?.value.trim() || "";
-    const password = document.getElementById("userLoginPassword")?.value.trim() || "";
-    const foundUser = getUsers().find(user =>
-        user.username.toLowerCase() === username.toLowerCase() && user.password === password
-    );
+    const password = document.getElementById("userLoginPassword")?.value || "";
 
     clearFormMessage("userLoginMessage");
+
     if (!username || !password) {
         showFormMessage("userLoginMessage", "Please enter username and password.");
         return;
     }
-    if (!foundUser) {
-        showFormMessage("userLoginMessage", "Invalid username or password.");
-        return;
-    }
 
-    writeStorage(STORAGE_KEYS.currentUser, { username: foundUser.username, role: "user" });
-    addActivityFor(foundUser.username, "Login", "Logged in to QR Motors");
-    window.location.href = "home.html";
+    try {
+        const response = await fetch("login.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (!result.success || result.user.role !== "user") {
+            showFormMessage("userLoginMessage", "Invalid user username or password.");
+            return;
+        }
+
+        writeStorage(STORAGE_KEYS.currentUser, result.user);
+        window.location.href = "home.html";
+    } catch (error) {
+        showFormMessage("userLoginMessage", "Cannot connect to the server.");
+    }
 }
 
-function loginAdmin() {
+async function loginAdmin() {
     const username = document.getElementById("adminName")?.value.trim() || "";
-    const password = document.getElementById("adminPassword")?.value.trim() || "";
+    const password = document.getElementById("adminPassword")?.value || "";
 
     clearFormMessage("adminLoginMessage");
+
     if (!username || !password) {
         showFormMessage("adminLoginMessage", "Please enter the admin username and password.");
         return;
     }
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        writeStorage(STORAGE_KEYS.currentUser, { username: "Admin", role: "admin" });
+
+    try {
+        const response = await fetch("login.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (!result.success || result.user.role !== "admin") {
+            showFormMessage("adminLoginMessage", "Wrong admin username or password.");
+            return;
+        }
+
+        writeStorage(STORAGE_KEYS.currentUser, result.user);
         window.location.href = "admin.html";
-    } else {
-        showFormMessage("adminLoginMessage", "Wrong admin username or password.");
+    } catch (error) {
+        showFormMessage("adminLoginMessage", "Cannot connect to the server.");
     }
 }
 
