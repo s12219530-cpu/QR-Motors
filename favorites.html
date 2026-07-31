@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Favorites - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Favorites - QR Motors</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
+
 <header>
     <h2>QR Motors</h2>
+
     <nav>
         <a href="home.html">Home</a>
         <a href="cars.html">Cars</a>
@@ -16,14 +26,180 @@
         <a href="tips.html">Tips</a>
         <a class="admin-only" href="admin.html">Admin</a>
         <a href="contact.html">Contact</a>
+
         <span id="loggedUserName" class="user-box"></span>
-        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+
+        <a class="logout-btn"
+           href="#"
+           onclick="logout(); return false;">
+            Logout
+        </a>
     </nav>
 </header>
-<section class="page-title"><h1>My Favorite Cars</h1><p>Only the cars saved by the logged-in user are shown here.</p></section>
-<section class="section"><div id="favoritesList" class="car-container"></div></section>
-<section class="empty-box"><h2>Want to save more cars?</h2><p>Open the Cars page and select Favorite.</p><a href="cars.html">Browse Cars</a></section>
-<footer><p>2026 QR Motors - Favorites</p></footer>
-<script src="images.js"></script><script src="auth.js"></script><script>requireLogin(["user"]); setupNavbar(); initializePage();</script>
+
+<section class="page-title">
+    <h1>My Favorite Cars</h1>
+    <p>Only the cars saved by the logged-in user are shown here.</p>
+</section>
+
+<section class="section">
+    <div id="favoritesList" class="car-container">
+        <p>Loading favorites...</p>
+    </div>
+</section>
+
+<section class="empty-box">
+    <h2>Want to save more cars?</h2>
+    <p>Open the Cars page and select Favorite.</p>
+    <a href="cars.html">Browse Cars</a>
+</section>
+
+<footer>
+    <p>2026 QR Motors - Favorites</p>
+</footer>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+
+<script>
+    requireLogin(["user"]);
+    setupNavbar();
+</script>
+
 <script src="premium.js"></script>
-</body></html>
+
+<script>
+    const favoritesList = document.getElementById("favoritesList");
+
+    function formatFavoritePrice(price) {
+        return Number(price).toLocaleString("en-US") + " NIS";
+    }
+
+    function createDetailsUrl(car) {
+        const parameters = new URLSearchParams({
+            carName: car.name,
+            price: formatFavoritePrice(car.price),
+            image: car.image
+        });
+
+        return "details.html?" + parameters.toString();
+    }
+
+    async function loadDatabaseFavorites() {
+        favoritesList.innerHTML = "<p>Loading favorites...</p>";
+
+        try {
+            const response = await fetch("favorites.php", {
+                method: "GET",
+                credentials: "same-origin"
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "Could not load favorites."
+                );
+            }
+
+            displayFavorites(result.favorites);
+
+        } catch (error) {
+            favoritesList.innerHTML = `
+                <div class="empty-state">
+                    <h3>Could not load favorites</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    function displayFavorites(cars) {
+        if (!cars.length) {
+            favoritesList.innerHTML = `
+                <div class="empty-state">
+                    <h3>No favorite cars yet</h3>
+                    <p>Add cars from the Cars page.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        favoritesList.innerHTML = cars.map(car => `
+            <div class="car-card" data-car-id="${Number(car.id)}">
+
+                <img
+                    data-img="${escapeHtml(car.image)}"
+                    alt="${escapeHtml(car.name)}"
+                >
+
+                <div class="car-info">
+                    <h3>${escapeHtml(car.name)}</h3>
+
+                    <p>Brand: ${escapeHtml(car.brand)}</p>
+                    <p>Year: ${escapeHtml(car.year)}</p>
+                    <p>Category: ${escapeHtml(car.category)}</p>
+                    <p>Fuel: ${escapeHtml(car.fuel)}</p>
+                    <p>Gear: ${escapeHtml(car.gear)}</p>
+                    <p>Mileage: ${Number(car.mileage).toLocaleString("en-US")} km</p>
+
+                    <h4>${formatFavoritePrice(car.price)}</h4>
+
+                    <a
+                        class="details-btn"
+                        href="${createDetailsUrl(car)}">
+                        View Details
+                    </a>
+
+                    <button
+                        class="remove-btn"
+                        type="button"
+                        onclick="removeDatabaseFavorite(${Number(car.id)})">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        `).join("");
+
+        document
+            .querySelectorAll("#favoritesList img[data-img]")
+            .forEach(loadFlexibleImage);
+    }
+
+    async function removeDatabaseFavorite(carId) {
+        try {
+            const response = await fetch("favorites.php", {
+                method: "DELETE",
+                credentials: "same-origin",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    car_id: carId
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "Could not remove favorite."
+                );
+            }
+
+            qrToast(result.message);
+            await loadDatabaseFavorites();
+
+        } catch (error) {
+            qrToast(error.message);
+        }
+    }
+
+    loadDatabaseFavorites();
+</script>
+
+</body>
+</html>
