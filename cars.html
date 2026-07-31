@@ -95,7 +95,7 @@
                 <p>Mileage: 12,000 km</p>
                 <h4>1,250,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="1">♡ Favorite</button>
             </div>
         </div>
 
@@ -109,7 +109,7 @@
                 <p>Mileage: 18,000 km</p>
                 <h4>980,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="2">♡ Favorite</button>
             </div>
         </div>
 
@@ -123,7 +123,7 @@
                 <p>Mileage: 25,000 km</p>
                 <h4>620,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="3">♡ Favorite</button>
             </div>
         </div>
 
@@ -137,7 +137,7 @@
                 <p>Mileage: 30,000 km</p>
                 <h4>430,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="4">♡ Favorite</button>
             </div>
         </div>
 
@@ -151,7 +151,7 @@
                 <p>Mileage: 55,000 km</p>
                 <h4>360,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="5">♡ Favorite</button>
             </div>
         </div>
 
@@ -165,7 +165,7 @@
                 <p>Mileage: 22,000 km</p>
                 <h4>150,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="6">♡ Favorite</button>
             </div>
         </div>
 
@@ -179,7 +179,7 @@
                 <p>Mileage: 40,000 km</p>
                 <h4>390,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="7">♡ Favorite</button>
             </div>
         </div>
 
@@ -193,7 +193,7 @@
                 <p>Mileage: 45,000 km</p>
                 <h4>210,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="8">♡ Favorite</button>
             </div>
         </div>
 
@@ -207,7 +207,7 @@
                 <p>Mileage: 35,000 km</p>
                 <h4>260,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="9">♡ Favorite</button>
             </div>
         </div>
 
@@ -221,7 +221,7 @@
                 <p>Mileage: 70,000 km</p>
                 <h4>85,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="10">♡ Favorite</button>
             </div>
         </div>
 
@@ -235,7 +235,7 @@
                 <p>Mileage: 80,000 km</p>
                 <h4>78,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="11">♡ Favorite</button>
             </div>
         </div>
 
@@ -249,7 +249,7 @@
                 <p>Mileage: 50,000 km</p>
                 <h4>70,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="12">♡ Favorite</button>
             </div>
         </div>
 
@@ -263,7 +263,7 @@
                 <p>Mileage: 95,000 km</p>
                 <h4>95,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="13">♡ Favorite</button>
             </div>
         </div>
 
@@ -277,7 +277,7 @@
                 <p>Mileage: 60,000 km</p>
                 <h4>140,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="14">♡ Favorite</button>
             </div>
         </div>
 
@@ -291,7 +291,7 @@
                 <p>Mileage: 110,000 km</p>
                 <h4>62,000 NIS</h4>
                 <a class="details-btn" href="details.html">Details</a>
-                <button class="favorite-btn">♡ Favorite</button>
+                <button class="favorite-btn" data-car-id="15">♡ Favorite</button>
             </div>
         </div>
 
@@ -313,5 +313,56 @@
 </script>
 
 <script src="premium.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const buttons = document.querySelectorAll(".favorite-btn[data-car-id]");
+    let favoriteIds = new Set();
+
+    function updateButton(button, isFavorite) {
+        button.textContent = isFavorite ? "♥ Favorited" : "♡ Favorite";
+        button.classList.toggle("active", isFavorite);
+    }
+
+    try {
+        const response = await fetch("favorites.php", { credentials: "same-origin" });
+        const result = await response.json();
+        if (result.success) {
+            favoriteIds = new Set(result.favorites.map(car => Number(car.id)));
+        }
+    } catch (error) {
+        console.error("Could not load favorites:", error);
+    }
+
+    buttons.forEach(button => {
+        const carId = Number(button.dataset.carId);
+        updateButton(button, favoriteIds.has(carId));
+
+        button.onclick = async () => {
+            button.disabled = true;
+            const isFavorite = favoriteIds.has(carId);
+            try {
+                const response = await fetch("favorites.php", {
+                    method: isFavorite ? "DELETE" : "POST",
+                    credentials: "same-origin",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ car_id: carId })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Request failed");
+                }
+                if (isFavorite) favoriteIds.delete(carId);
+                else favoriteIds.add(carId);
+                updateButton(button, !isFavorite);
+                qrToast(result.message);
+            } catch (error) {
+                qrToast(error.message || "Could not update favorites.");
+            } finally {
+                button.disabled = false;
+            }
+        };
+    });
+});
+</script>
 </body>
 </html>

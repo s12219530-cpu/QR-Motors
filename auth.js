@@ -240,13 +240,17 @@ function setupNavbar() {
     });
 }
 
-function logout() {
-    const currentUser = getCurrentUser();
-    if (currentUser?.role === "user") {
-        addActivityFor(currentUser.username, "Logout", "Logged out of QR Motors");
+async function logout() {
+    try {
+        await fetch("logout.php", {
+            method: "POST"
+        });
+    } catch (error) {
+        console.error("Logout request failed:", error);
+    } finally {
+        localStorage.removeItem(STORAGE_KEYS.currentUser);
+        window.location.href = "index.html";
     }
-    localStorage.removeItem(STORAGE_KEYS.currentUser);
-    window.location.href = "index.html";
 }
 
 function addActivityFor(username, type, description, metadata = {}) {

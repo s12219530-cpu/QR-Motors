@@ -12,21 +12,23 @@
 </audio>
 
 <script>
-    const carSound = document.getElementById("carIntroSound");
-    carSound.volume = 0.6;
+    document.addEventListener("DOMContentLoaded", function () {
+        const carSound = document.getElementById("carIntroSound");
 
-    function playCarSound() {
-        carSound.currentTime = 0;
-        carSound.play().catch(() => {});
+        carSound.volume = 0.6;
 
-        document.removeEventListener("pointerdown", playCarSound);
-        document.removeEventListener("keydown", playCarSound);
-    }
+        function playSound() {
+            carSound.play().catch(() => {});
+        }
 
-    window.addEventListener("load", () => {
-        carSound.play().catch(() => {
-            document.addEventListener("pointerdown", playCarSound);
-            document.addEventListener("keydown", playCarSound);
+        playSound();
+
+        document.addEventListener("pointerdown", playSound, {
+            once: true
+        });
+
+        document.addEventListener("keydown", playSound, {
+            once: true
         });
     });
 </script>
@@ -254,8 +256,7 @@
 </div>
 
 <script src="images.js"></script>
-<script src="auth.js"></script>
-<script>
+<script src="auth.js?v=2"></script><script>
     (function () {
         const thumbs = Array.from(document.querySelectorAll(".showcase-thumb"));
         const featuredImage = document.getElementById("featuredShowcaseImage");
