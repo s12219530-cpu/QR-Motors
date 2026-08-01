@@ -1,29 +1,100 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sell Car - QR Motors</title><link rel="stylesheet" href="style.css"></head>
-<body><header>
-    <h2>QR Motors</h2>
-    <nav>
-        <a href="home.html">Home</a>
-        <a href="cars.html">Cars</a>
-        <a href="dealers.html">Showroom</a>
-        <a href="compare.html">Compare</a>
-        <a class="user-only" href="favorites.html">Favorites</a>
-        <a class="user-only" href="sell-car.html">Sell Car</a>
-        <a class="user-only" href="user-dashboard.html">My Activity</a>
-        <a href="about.html">About</a>
-        <a href="tips.html">Tips</a>
-        <a class="admin-only" href="admin.html">Admin</a>
-        <a href="contact.html">Contact</a>
-        <span id="loggedUserName" class="user-box"></span>
-        <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
-    </nav>
-</header>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Car - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h2>QR Motors</h2><nav>
+    <a href="home.html">Home</a><a href="cars.html">Cars</a><a href="dealers.html">Showroom</a><a href="compare.html">Compare</a>
+    <a class="user-only" href="favorites.html">Favorites</a><a class="user-only" href="sell-car.html">Sell Car</a><a class="user-only" href="user-dashboard.html">My Activity</a>
+    <a href="about.html">About</a><a href="tips.html">Tips</a><a class="admin-only" href="admin.html">Admin</a><a href="contact.html">Contact</a>
+    <span id="loggedUserName" class="user-box"></span><a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
+</nav></header>
+
 <section class="page-title"><h1>Sell Your Car</h1><p>Your submission will appear in the admin dashboard under your username.</p></section>
-<section class="form-section"><form id="sellCarForm" onsubmit="submitSellCar(event)">
-<input name="carName" type="text" placeholder="Car Name" required><input name="brand" type="text" placeholder="Brand"><input name="model" type="text" placeholder="Model"><input name="year" type="number" placeholder="Year"><input name="price" type="number" placeholder="Price (NIS)" required><input name="city" type="text" placeholder="City">
-<select name="fuel"><option value="">Fuel Type</option><option>Petrol</option><option>Diesel</option><option>Hybrid</option><option>Electric</option></select>
-<select name="transmission"><option value="">Transmission</option><option>Automatic</option><option>Manual</option></select>
-<input name="mileage" type="text" placeholder="Mileage"><input name="phone" type="text" placeholder="Phone Number" required><textarea name="description" placeholder="Car Description"></textarea><button type="submit">Submit Car to Admin</button>
-</form></section><footer><p>2026 QR Motors - Sell Car</p></footer>
-<script src="auth.js"></script><script>requireLogin(["user"]); setupNavbar(); initializePage();</script><script src="premium.js"></script>
-</body></html>
+
+<section class="form-section">
+<form id="sellCarForm" onsubmit="submitSellCar(event)">
+    <select id="sellCarName" name="carName" required>
+        <option value="">Select Car</option>
+        <option value="Lamborghini Aventador 2022" data-brand="Lamborghini" data-model="Aventador" data-year="2022">Lamborghini Aventador 2022</option>
+        <option value="Ferrari 488 GTB 2020" data-brand="Ferrari" data-model="488 GTB" data-year="2020">Ferrari 488 GTB 2020</option>
+        <option value="Porsche 911 Carrera 2021" data-brand="Porsche" data-model="911 Carrera" data-year="2021">Porsche 911 Carrera 2021</option>
+        <option value="Audi RS7 2020" data-brand="Audi" data-model="RS7" data-year="2020">Audi RS7 2020</option>
+        <option value="Range Rover Sport 2019" data-brand="Range Rover" data-model="Sport" data-year="2019">Range Rover Sport 2019</option>
+        <option value="Tesla Model 3 2022" data-brand="Tesla" data-model="Model 3" data-year="2022">Tesla Model 3 2022</option>
+        <option value="Nissan GT-R 2018" data-brand="Nissan" data-model="GT-R" data-year="2018">Nissan GT-R 2018</option>
+        <option value="Chevrolet Camaro 2019" data-brand="Chevrolet" data-model="Camaro" data-year="2019">Chevrolet Camaro 2019</option>
+        <option value="Ford Mustang 2020" data-brand="Ford" data-model="Mustang" data-year="2020">Ford Mustang 2020</option>
+        <option value="Hyundai Tucson 2018" data-brand="Hyundai" data-model="Tucson" data-year="2018">Hyundai Tucson 2018</option>
+        <option value="Kia Sportage 2019" data-brand="Kia" data-model="Sportage" data-year="2019">Kia Sportage 2019</option>
+        <option value="Toyota Corolla 2021" data-brand="Toyota" data-model="Corolla" data-year="2021">Toyota Corolla 2021</option>
+        <option value="BMW 320i 2018" data-brand="BMW" data-model="320i" data-year="2018">BMW 320i 2018</option>
+        <option value="Mercedes C-Class 2019" data-brand="Mercedes" data-model="C-Class" data-year="2019">Mercedes C-Class 2019</option>
+        <option value="Volkswagen Golf 2017" data-brand="Volkswagen" data-model="Golf" data-year="2017">Volkswagen Golf 2017</option>
+    </select>
+
+    <select id="sellCarBrand" name="brand" required><option value="">Select Brand</option><option>Lamborghini</option><option>Ferrari</option><option>Porsche</option><option>Audi</option><option>Range Rover</option><option>Tesla</option><option>Nissan</option><option>Chevrolet</option><option>Ford</option><option>Hyundai</option><option>Kia</option><option>Toyota</option><option>BMW</option><option>Mercedes</option><option>Volkswagen</option></select>
+    <input id="sellCarModel" name="model" type="text" placeholder="Model" required readonly>
+    <select id="sellCarYear" name="year" required><option value="">Select Year</option></select>
+    <input name="price" type="number" min="1000" max="10000000" step="1000" placeholder="Price (NIS) - minimum 1,000" required>
+    <input name="city" type="text" placeholder="City" required>
+    <select name="fuel" required><option value="">Fuel Type</option><option>Petrol</option><option>Diesel</option><option>Hybrid</option><option>Electric</option></select>
+    <select name="transmission" required><option value="">Transmission</option><option>Automatic</option><option>Manual</option></select>
+    <input name="mileage" type="number" min="0" max="1000000" step="1000" placeholder="Mileage (km)">
+    <input name="phone" type="tel" inputmode="numeric" minlength="10" maxlength="10" pattern="05[69][0-9]{7}" placeholder="Phone: 0599999999 or 0569999999" title="Enter a 10-digit number starting with 059 or 056" required>
+    <textarea name="description" maxlength="1000" placeholder="Car Description"></textarea>
+    <button type="submit">Submit Car to Admin</button>
+</form>
+</section>
+
+<footer><p>2026 QR Motors - Sell Car</p></footer>
+<script src="auth.js"></script>
+<script>requireLogin(["user"]); setupNavbar();</script>
+<script src="premium.js"></script>
+<script>
+const yearSelect = document.getElementById("sellCarYear");
+for (let year = 2026; year >= 1950; year--) yearSelect.add(new Option(year, year));
+
+document.getElementById("sellCarName").addEventListener("change", function () {
+    const option = this.options[this.selectedIndex];
+    document.getElementById("sellCarBrand").value = option.dataset.brand || "";
+    document.getElementById("sellCarModel").value = option.dataset.model || "";
+    yearSelect.value = option.dataset.year || "";
+});
+
+async function submitSellCar(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+    const button = form.querySelector('button[type="submit"]');
+    const fields = new FormData(form);
+    const data = Object.fromEntries(fields.entries());
+    data.car_name = data.carName;
+    delete data.carName;
+    button.disabled = true;
+    button.textContent = "Submitting...";
+    try {
+        const response = await fetch("sell_requests.php", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || "Could not submit your car.");
+        qrToast(result.message);
+        form.reset();
+    } catch (error) {
+        qrToast(error.message);
+    } finally {
+        button.disabled = false;
+        button.textContent = "Submit Car to Admin";
+    }
+}
+</script>
+</body>
+</html>

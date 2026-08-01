@@ -88,7 +88,91 @@
 <footer><p>2026 QR Motors - Details Page</p></footer>
 <script src="images.js"></script>
 <script src="auth.js"></script>
-<script>requireLogin(["user", "admin"]); setupNavbar(); initializePage();</script>
+
+<script>
+    requireLogin(["user", "admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
 <script src="premium.js"></script>
+
+<script>
+    const carIds = {
+        "Lamborghini Aventador 2022": 1,
+        "Ferrari 488 GTB 2020": 2,
+        "Porsche 911 Carrera 2021": 3,
+        "Audi RS7 2020": 4,
+        "Range Rover Sport 2019": 5,
+        "Tesla Model 3 2022": 6,
+        "Nissan GT-R 2018": 7,
+        "Chevrolet Camaro 2019": 8,
+        "Ford Mustang 2020": 9,
+        "Hyundai Tucson 2018": 10,
+        "Kia Sportage 2019": 11,
+        "Toyota Corolla 2021": 12,
+        "BMW 320i 2018": 13,
+        "Mercedes C-Class 2019": 14,
+        "Volkswagen Golf 2017": 15
+    };
+
+    const buyRequestButton =
+        document.getElementById("buyRequestButton");
+
+    buyRequestButton.onclick = async function () {
+        const carName = document
+            .getElementById("detailCarName")
+            .textContent
+            .trim();
+
+        const carId = carIds[carName];
+
+        if (!carId) {
+            qrToast("Could not identify this car.");
+            return;
+        }
+
+        buyRequestButton.disabled = true;
+        buyRequestButton.textContent = "Sending...";
+
+        try {
+            const response = await fetch(
+                "purchase_requests.php",
+                {
+                    method: "POST",
+                    credentials: "same-origin",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        car_id: carId
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message ||
+                    "Could not send purchase request."
+                );
+            }
+
+            qrToast(result.message);
+            buyRequestButton.textContent = "Request Sent";
+            buyRequestButton.disabled = true;
+
+        } catch (error) {
+            qrToast(error.message);
+
+            buyRequestButton.textContent = "Request to Buy";
+            buyRequestButton.disabled = false;
+        }
+    };
+</script>
+
 </body>
 </html>

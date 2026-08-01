@@ -1,16 +1,19 @@
 <?php
 
 session_start();
+
 header('Content-Type: application/json; charset=utf-8');
 
 require 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
+
     echo json_encode([
         'success' => false,
-        'message' => 'يجب تسجيل الدخول أولاً'
+        'message' => 'You must log in first.'
     ]);
+
     exit;
 }
 
@@ -31,7 +34,8 @@ if ($method === 'GET') {
             cars.price,
             cars.image
          FROM favorites
-         INNER JOIN cars ON cars.id = favorites.car_id
+         INNER JOIN cars
+            ON cars.id = favorites.car_id
          WHERE favorites.user_id = ?
          ORDER BY favorites.created_at DESC"
     );
@@ -42,31 +46,42 @@ if ($method === 'GET') {
         'success' => true,
         'favorites' => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ]);
+
     exit;
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-$carId = isset($data['car_id']) ? (int) $data['car_id'] : 0;
+
+$carId = isset($data['car_id'])
+    ? (int) $data['car_id']
+    : 0;
 
 if ($carId <= 0) {
     http_response_code(400);
+
     echo json_encode([
         'success' => false,
-        'message' => 'رقم السيارة غير صحيح'
+        'message' => 'Invalid car ID.'
     ]);
+
     exit;
 }
 
 if ($method === 'POST') {
-    $checkCar = $pdo->prepare("SELECT id FROM cars WHERE id = ?");
+    $checkCar = $pdo->prepare(
+        "SELECT id FROM cars WHERE id = ?"
+    );
+
     $checkCar->execute([$carId]);
 
     if (!$checkCar->fetch()) {
         http_response_code(404);
+
         echo json_encode([
             'success' => false,
-            'message' => 'السيارة غير موجودة'
+            'message' => 'Car not found.'
         ]);
+
         exit;
     }
 
@@ -74,31 +89,37 @@ if ($method === 'POST') {
         "INSERT IGNORE INTO favorites (user_id, car_id)
          VALUES (?, ?)"
     );
+
     $stmt->execute([$userId, $carId]);
 
     echo json_encode([
         'success' => true,
-        'message' => 'تمت إضافة السيارة إلى المفضلة'
+        'message' => 'Car added to your favorites.'
     ]);
+
     exit;
 }
 
 if ($method === 'DELETE') {
     $stmt = $pdo->prepare(
         "DELETE FROM favorites
-         WHERE user_id = ? AND car_id = ?"
+         WHERE user_id = ?
+         AND car_id = ?"
     );
+
     $stmt->execute([$userId, $carId]);
 
     echo json_encode([
         'success' => true,
-        'message' => 'تم حذف السيارة من المفضلة'
+        'message' => 'Car removed from your favorites.'
     ]);
+
     exit;
 }
 
 http_response_code(405);
+
 echo json_encode([
     'success' => false,
-    'message' => 'طريقة الطلب غير مسموحة'
+    'message' => 'Request method is not allowed.'
 ]);

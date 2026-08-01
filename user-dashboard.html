@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Activity - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Activity - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 <header>
     <h2>QR Motors</h2>
@@ -20,18 +25,126 @@
         <a class="logout-btn" href="#" onclick="logout(); return false;">Logout</a>
     </nav>
 </header>
-<section class="user-hero"><h1>My Activity</h1><p>Your private activity, purchase requests, and showroom appointments.</p></section>
+
+<section class="user-hero">
+    <h1>My Activity</h1>
+    <p>Track your purchase requests, appointments and favorite cars.</p>
+</section>
+
 <section id="userDashboardRoot" class="admin-dashboard">
     <div class="stats-container">
         <div class="stat-card"><h3>My Actions</h3><p id="myActivityCount">0</p></div>
         <div class="stat-card"><h3>Purchase Requests</h3><p id="myRequestCount">0</p></div>
         <div class="stat-card"><h3>Appointments</h3><p id="myAppointmentCount">0</p></div>
-        <div class="stat-card"><h3>Favorites</h3><p id="myFavoriteCount">0</p></div>
+        <div class="stat-card"><h3>Favorite Cars</h3><p id="myFavoriteCount">0</p></div>
     </div>
-    <div class="admin-section"><h2>My Purchase Requests & Appointments</h2><div id="myRequestsList"></div></div>
-    <div class="admin-section"><h2>My Activity History</h2><div id="myActivitiesList"></div></div>
+
+    <div class="admin-section">
+        <div class="section-heading-row">
+            <div>
+                <h2>My Purchase Requests</h2>
+                <p class="section-help">Check the latest status and showroom appointment details.</p>
+            </div>
+            <button type="button" onclick="loadUserDashboard()">Refresh</button>
+        </div>
+        <div id="myRequestsList"><p>Loading requests...</p></div>
+    </div>
+    <div class="admin-section">
+        <h2>My Activity History</h2>
+        <div id="myActivitiesList">
+            <p class="muted">Activity history will be connected in the next step.</p>
+        </div>
+    </div>
 </section>
+
 <footer><p>2026 QR Motors - My Activity</p></footer>
-<script src="auth.js"></script><script>requireLogin(["user"]); setupNavbar(); initializePage();</script>
+
+<script src="images.js"></script>
+<script src="auth.js"></script>
+<script>
+    requireLogin(["user"]);
+    setupNavbar();
+
+    function dashboardPrice(price) {
+        return Number(price).toLocaleString("en-US") + " NIS";
+    }
+
+    function dashboardValue(value, fallback = "Not assigned yet") {
+        return value ? escapeHtml(value) : fallback;
+    }
+
+    async function loadUserDashboard() {
+        const requestBox = document.getElementById("myRequestsList");
+        requestBox.innerHTML = "<p>Loading requests...</p>";
+
+        try {
+            const [requestsResponse, favoritesResponse] = await Promise.all([
+                fetch("purchase_requests.php", { credentials: "same-origin" }),
+                fetch("favorites.php", { credentials: "same-origin" })
+            ]);
+
+            const requestsResult = await requestsResponse.json();
+            const favoritesResult = await favoritesResponse.json();
+
+            if (!requestsResponse.ok || !requestsResult.success) {
+                throw new Error(requestsResult.message || "Could not load purchase requests.");
+            }
+
+            const requests = requestsResult.requests;
+            const favorites = favoritesResult.success ? favoritesResult.favorites : [];
+
+            document.getElementById("myActivityCount").textContent = 0;
+            document.getElementById("myRequestCount").textContent = requests.length;
+            document.getElementById("myAppointmentCount").textContent = requests.filter(item => item.status === "Appointment Scheduled").length;
+            document.getElementById("myFavoriteCount").textContent = favorites.length;
+
+            if (!requests.length) {
+                requestBox.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No purchase requests yet</h3>
+                        <p>Open the Cars page and request a car to buy.</p>
+                        <a class="details-btn" href="cars.html">Browse Cars</a>
+                    </div>`;
+                return;
+            }
+
+            requestBox.innerHTML = requests.map(item => {
+                const detailsUrl = "details.html?" + new URLSearchParams({
+                    carName: item.name,
+                    price: dashboardPrice(item.price),
+                    image: item.image
+                }).toString();
+
+                return `
+                    <div class="request-card request-grid">
+                        <div class="request-summary">
+                            <h3>${escapeHtml(item.name)}</h3>
+                            <p><b>Brand:</b> ${escapeHtml(item.brand)}</p>
+                            <p><b>Year:</b> ${escapeHtml(item.year)}</p>
+                            <p><b>Price:</b> ${dashboardPrice(item.price)}</p>
+                            <p><b>Requested:</b> ${escapeHtml(item.requested_at)}</p>
+                            <p><b>Status:</b> <span class="status-pill ${statusClass(item.status)}">${escapeHtml(item.status)}</span></p>
+                            <a class="details-btn" href="${detailsUrl}">View Car</a>
+                        </div>
+                        <div class="appointment-box">
+                            <h4>Showroom Appointment</h4>
+                            <p><b>Date:</b> ${dashboardValue(item.appointment_date)}</p>
+                            <p><b>Time:</b> ${dashboardValue(item.appointment_time ? item.appointment_time.slice(0, 5) : "")}</p>
+                            <p><b>Admin note:</b> ${dashboardValue(item.admin_note, "No note yet")}</p>
+                        </div>
+                    </div>`;
+            }).join("");
+        } catch (error) {
+            requestBox.innerHTML = `
+                <div class="empty-state">
+                    <h3>Could not load your activity</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>`;
+        }
+    }
+
+    loadUserDashboard();
+</script>
 <script src="premium.js"></script>
-</body></html>
+</body>
+</html>

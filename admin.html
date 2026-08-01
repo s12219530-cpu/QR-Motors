@@ -1,6 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Dashboard - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<script>
+    async function loadAdminUsersAndActivities() {
+        try {
+            const [usersResponse, activitiesResponse] =
+                await Promise.all([
+                    fetch("users.php", {
+                        credentials: "same-origin"
+                    }),
+
+                    fetch("activities.php", {
+                        credentials: "same-origin"
+                    })
+                ]);
+
+            const usersResult =
+                await usersResponse.json();
+
+            const activitiesResult =
+                await activitiesResponse.json();
+
+            if (
+                !usersResponse.ok ||
+                !usersResult.success
+            ) {
+                throw new Error(
+                    usersResult.message ||
+                    "Could not load users."
+                );
+            }
+
+            if (
+                !activitiesResponse.ok ||
+                !activitiesResult.success
+            ) {
+                throw new Error(
+                    activitiesResult.message ||
+                    "Could not load activities."
+                );
+            }
+
+            displayAdminUsers(usersResult.users);
+
+            displayAdminActivities(
+                activitiesResult.activities
+            );
+
+        } catch (error) {
+            qrToast(error.message);
+        }
+    }
+
+    function displayAdminUsers(users) {
+        const usersList =
+            document.getElementById(
+                "registeredUsersList"
+            );
+
+        document.getElementById(
+            "adminUsersCount"
+        ).textContent = users.length;
+
+        if (!users.length) {
+            usersList.innerHTML = `
+                <p class="muted">
+                    No registered users yet.
+                </p>
+            `;
+
+            return;
+        }
+
+        usersList.innerHTML = `
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${users.map(user => `
+                            <tr>
+                                <td>${Number(user.id)}</td>
+
+                                <td>
+                                    ${escapeHtml(user.username)}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(user.role)}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(user.created_at)}
+                                </td>
+
+                                <td>
+                                    <span class="approved">
+                                        Active
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    function displayAdminActivities(activities) {
+        const activitiesList =
+            document.getElementById(
+                "allActivitiesList"
+            );
+
+        document.getElementById(
+            "adminActivitiesCount"
+        ).textContent = activities.length;
+
+        if (!activities.length) {
+            activitiesList.innerHTML = `
+                <p class="muted">
+                    No user activity recorded yet.
+                </p>
+            `;
+
+            return;
+        }
+
+        activitiesList.innerHTML = `
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${activities.map(activity => `
+                            <tr>
+                                <td>
+                                    ${escapeHtml(
+            activity.username
+        )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+            activity.type
+        )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+            activity.description
+        )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+            activity.created_at
+        )}
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    async function refreshAdminDatabase() {
+        await Promise.all([
+            loadAdminPurchaseRequests(),
+            loadAdminUsersAndActivities()
+        ]);
+
+        qrToast("Dashboard refreshed.");
+    }
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadAdminUsersAndActivities
+    );
+</script>
 <body>
 <header>
     <h2>QR Motors</h2>
@@ -33,8 +227,287 @@
     <div class="admin-section"><h2>Registered Users</h2><div id="registeredUsersList"></div></div>
     <div class="admin-section"><h2>Sell-Car Requests</h2><div id="sellRequestsList"></div></div>
     <div class="admin-section"><h2>User Messages</h2><div id="messagesList"></div></div>
-<div class="admin-section"><h2>Management Shortcuts</h2><div class="toolbar-upgrade"><button type="button" onclick="exportInventory()">⇩ Export Inventory</button><button type="button" onclick="renderAdminDashboard(); qrToast('Dashboard refreshed')">↻ Refresh</button></div></div></section>
+<div class="admin-section"><h2>Management Shortcuts</h2><div class="toolbar-upgrade"><button type="button" onclick="exportInventory()">⇩ Export Inventory</button><button type="button" onclick="refreshAdminDatabase()">
+    ↻ Refresh
+</button></div></div></section>
 <footer><p>2026 QR Motors - Admin Panel</p></footer>
-<script src="auth.js"></script><script>requireLogin(["admin"]); setupNavbar(); initializePage();</script>
+<script src="auth.js"></script>
+
+<script>
+    requireLogin(["admin"]);
+    setupNavbar();
+    initializePage();
+</script>
+
 <script src="premium.js"></script>
-</body></html>
+
+<script>
+    async function loadAdminPurchaseRequests() {
+        const requestsList =
+            document.getElementById("purchaseRequestsList");
+
+        requestsList.innerHTML =
+            "<p>Loading purchase requests...</p>";
+
+        try {
+            const response = await fetch(
+                "admin_purchase_requests.php",
+                {
+                    method: "GET",
+                    credentials: "same-origin"
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message ||
+                    "Could not load purchase requests."
+                );
+            }
+
+            displayAdminPurchaseRequests(result.requests);
+
+        } catch (error) {
+            requestsList.innerHTML = `
+                <div class="empty-state">
+                    <h3>Could not load purchase requests</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    function displayAdminPurchaseRequests(requests) {
+        const requestsList =
+            document.getElementById("purchaseRequestsList");
+
+        const pendingCount = requests.filter(
+            request => request.status === "Pending"
+        ).length;
+
+        const appointmentCount = requests.filter(
+            request =>
+                request.status === "Appointment Scheduled"
+        ).length;
+
+        document.getElementById(
+            "adminPendingCount"
+        ).textContent = pendingCount;
+
+        document.getElementById(
+            "adminAppointmentsCount"
+        ).textContent = appointmentCount;
+
+        if (!requests.length) {
+            requestsList.innerHTML = `
+                <div class="empty-state">
+                    <h3>No purchase requests yet</h3>
+                    <p>User purchase requests will appear here.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        requestsList.innerHTML = requests.map(request => {
+            const appointmentTime =
+                request.appointment_time
+                    ? request.appointment_time.slice(0, 5)
+                    : "";
+
+            const appointmentDate =
+                request.appointment_date || "";
+
+            const adminNote =
+                request.admin_note || "";
+
+            const price =
+                Number(request.price).toLocaleString("en-US")
+                + " NIS";
+
+            return `
+                <div class="request-card admin-request-card">
+                    <div class="request-summary">
+                        <h3>${escapeHtml(request.car_name)}</h3>
+
+                        <p>
+                            <b>User:</b>
+                            ${escapeHtml(request.username)}
+                        </p>
+
+                        <p>
+                            <b>Brand:</b>
+                            ${escapeHtml(request.brand)}
+                        </p>
+
+                        <p>
+                            <b>Year:</b>
+                            ${escapeHtml(request.year)}
+                        </p>
+
+                        <p>
+                            <b>Price:</b>
+                            ${price}
+                        </p>
+
+                        <p>
+                            <b>Requested:</b>
+                            ${escapeHtml(request.requested_at)}
+                        </p>
+
+                        <p>
+                            <b>Status:</b>
+
+                            <span class="status-pill ${statusClass(request.status)}">
+                                ${escapeHtml(request.status)}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="schedule-panel">
+                        <label>
+                            Appointment Date
+
+                            <input
+                                type="date"
+                                id="admin-date-${request.id}"
+                                value="${escapeHtml(appointmentDate)}"
+                            >
+                        </label>
+
+                        <label>
+                            Appointment Time
+
+                            <input
+                                type="time"
+                                id="admin-time-${request.id}"
+                                value="${escapeHtml(appointmentTime)}"
+                            >
+                        </label>
+
+                        <label>
+                            Admin Note
+
+                            <textarea
+                                id="admin-note-${request.id}"
+                                placeholder="Write a note for the user"
+                            >${escapeHtml(adminNote)}</textarea>
+                        </label>
+
+                        <div class="button-row">
+                            <button
+                                class="approve-btn"
+                                onclick="updateAdminRequest(
+                                    ${request.id},
+                                    'Appointment Scheduled'
+                                )">
+                                Save Appointment
+                            </button>
+
+                            <button
+                                class="edit-btn"
+                                onclick="updateAdminRequest(
+                                    ${request.id},
+                                    'Approved'
+                                )">
+                                Approve
+                            </button>
+
+                            <button
+                                class="delete-btn"
+                                onclick="updateAdminRequest(
+                                    ${request.id},
+                                    'Rejected'
+                                )">
+                                Reject
+                            </button>
+
+                            <button
+                                type="button"
+                                onclick="updateAdminRequest(
+                                    ${request.id},
+                                    'Completed'
+                                )">
+                                Complete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    async function updateAdminRequest(
+        requestId,
+        newStatus
+    ) {
+        const appointmentDate = document
+            .getElementById(`admin-date-${requestId}`)
+            .value;
+
+        const appointmentTime = document
+            .getElementById(`admin-time-${requestId}`)
+            .value;
+
+        const adminNote = document
+            .getElementById(`admin-note-${requestId}`)
+            .value
+            .trim();
+
+        if (
+            newStatus === "Appointment Scheduled" &&
+            (!appointmentDate || !appointmentTime)
+        ) {
+            qrToast(
+                "Please select appointment date and time."
+            );
+
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                "admin_purchase_requests.php",
+                {
+                    method: "PATCH",
+                    credentials: "same-origin",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        request_id: requestId,
+                        status: newStatus,
+                        appointment_date: appointmentDate,
+                        appointment_time: appointmentTime,
+                        admin_note: adminNote
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message ||
+                    "Could not update purchase request."
+                );
+            }
+
+            qrToast(result.message);
+
+            await loadAdminPurchaseRequests();
+
+        } catch (error) {
+            qrToast(error.message);
+        }
+    }
+
+    loadAdminPurchaseRequests();
+</script>
+
+</body>
+</html>
