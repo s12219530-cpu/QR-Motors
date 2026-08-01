@@ -73,7 +73,59 @@ if ($method === 'POST') {
     $stmt = $pdo->prepare("INSERT INTO sell_requests (user_id, car_name, brand, model, year, price, city, fuel, transmission, mileage, phone, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')");
     $stmt->execute([$userId, $carName, $brand, $model, $year, $price, $city, $fuel, $transmission, $mileage, $phone, $description !== '' ? $description : null]);
 
-    echo json_encode(['success' => true, 'message' => 'Your car was submitted successfully.', 'request_id' => (int) $pdo->lastInsertId()]);
+    $requestId = (int) $pdo->lastInsertId();
+    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+    $activity->execute([
+        $userId,
+        'Sell Request',
+        "Submitted $carName for admin review",
+        json_encode(['request_id' => $requestId, 'car_name' => $carName], JSON_UNESCAPED_UNICODE)
+    ]);
+
+    echo json_encode(['success' => true, 'message' => 'Your car was submitted successfully.', 'request_id' => $requestId]);
+    exit;
+}
+
+if ($method === 'PATCH') {
+    if ($role !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Admin access is required.']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true) ?? [];
+    $requestId = (int) ($data['request_id'] ?? 0);
+    $status = trim($data['status'] ?? '');
+    $allowedStatuses = ['Pending', 'Approved', 'Rejected'];
+
+    if ($requestId <= 0 || !in_array($status, $allowedStatuses, true)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid request ID or status.']);
+        exit;
+    }
+
+    $requestQuery = $pdo->prepare("SELECT user_id, car_name FROM sell_requests WHERE id = ?");
+    $requestQuery->execute([$requestId]);
+    $request = $requestQuery->fetch(PDO::FETCH_ASSOC);
+
+    if (!$request) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Sell-car request not found.']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("UPDATE sell_requests SET status = ? WHERE id = ?");
+    $stmt->execute([$status, $requestId]);
+
+    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+    $activity->execute([
+        (int) $request['user_id'],
+        'Admin Update',
+        "Sell-car request for {$request['car_name']} was $status",
+        json_encode(['request_id' => $requestId, 'status' => $status], JSON_UNESCAPED_UNICODE)
+    ]);
+
+    echo json_encode(['success' => true, 'message' => "Sell-car request marked as $status."]);
     exit;
 }
 

@@ -141,14 +141,17 @@ if ($method === 'PATCH') {
     }
 
     $checkRequest = $pdo->prepare(
-        "SELECT id
+        "SELECT purchase_requests.user_id, cars.name AS car_name
          FROM purchase_requests
-         WHERE id = ?"
+         INNER JOIN cars ON cars.id = purchase_requests.car_id
+         WHERE purchase_requests.id = ?"
     );
 
     $checkRequest->execute([$requestId]);
 
-    if (!$checkRequest->fetch()) {
+    $request = $checkRequest->fetch(PDO::FETCH_ASSOC);
+
+    if (!$request) {
         http_response_code(404);
 
         echo json_encode([
@@ -176,6 +179,14 @@ if ($method === 'PATCH') {
         $appointmentTime,
         $adminNote,
         $requestId
+    ]);
+
+    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+    $activity->execute([
+        (int) $request['user_id'],
+        'Admin Update',
+        "Purchase request for {$request['car_name']} changed to $status",
+        json_encode(['request_id' => $requestId, 'status' => $status], JSON_UNESCAPED_UNICODE)
     ]);
 
     echo json_encode([

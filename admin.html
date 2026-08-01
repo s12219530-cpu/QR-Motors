@@ -552,6 +552,10 @@
                         <p><b>Phone:</b> ${escapeHtml(item.phone)}</p>
                         <p><b>Description:</b> ${escapeHtml(item.description || "No description")}</p>
                         <p><b>Submitted:</b> ${escapeHtml(item.created_at)}</p>
+                        <div class="button-row">
+                            <button class="approve-btn" type="button" onclick="updateAdminSellRequest(${Number(item.id)}, 'Approved')">Approve</button>
+                            <button class="delete-btn" type="button" onclick="updateAdminSellRequest(${Number(item.id)}, 'Rejected')">Reject</button>
+                        </div>
                     </div>
                 </div>
             `).join("");
@@ -565,6 +569,25 @@
     }
 
     document.addEventListener("DOMContentLoaded", loadAdminSellRequests);
+
+    async function updateAdminSellRequest(requestId, status) {
+        try {
+            const response = await fetch("sell_requests.php", {
+                method: "PATCH",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ request_id: requestId, status })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not update sell-car request.");
+            }
+            qrToast(result.message);
+            await loadAdminSellRequests();
+        } catch (error) {
+            qrToast(error.message);
+        }
+    }
 </script>
 
 <script>

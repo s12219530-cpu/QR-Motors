@@ -134,10 +134,14 @@ if ($method === 'POST') {
         $carId
     ]);
 
+    $requestId = (int) $pdo->lastInsertId();
+    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+    $activity->execute([$userId, 'Purchase Request', "Requested to buy {$car['name']}", json_encode(['request_id' => $requestId, 'car_id' => $carId], JSON_UNESCAPED_UNICODE)]);
+
     echo json_encode([
         'success' => true,
         'message' => 'Your purchase request was sent successfully.',
-        'request_id' => (int) $pdo->lastInsertId()
+        'request_id' => $requestId
     ]);
 
     exit;

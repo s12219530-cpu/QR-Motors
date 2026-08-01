@@ -133,10 +133,14 @@ if ($method === 'POST') {
         $message
     ]);
 
+    $messageId = (int) $pdo->lastInsertId();
+    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+    $activity->execute([$userId, 'Contact Message', "Sent a message: $subject", json_encode(['message_id' => $messageId], JSON_UNESCAPED_UNICODE)]);
+
     echo json_encode([
         'success' => true,
         'message' => 'Your message was sent successfully.',
-        'message_id' => (int) $pdo->lastInsertId()
+        'message_id' => $messageId
     ]);
 
     exit;

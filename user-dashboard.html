@@ -78,13 +78,15 @@
         requestBox.innerHTML = "<p>Loading requests...</p>";
 
         try {
-            const [requestsResponse, favoritesResponse] = await Promise.all([
+            const [requestsResponse, favoritesResponse, activitiesResponse] = await Promise.all([
                 fetch("purchase_requests.php", { credentials: "same-origin" }),
-                fetch("favorites.php", { credentials: "same-origin" })
+                fetch("favorites.php", { credentials: "same-origin" }),
+                fetch("activities.php", { credentials: "same-origin" })
             ]);
 
             const requestsResult = await requestsResponse.json();
             const favoritesResult = await favoritesResponse.json();
+            const activitiesResult = await activitiesResponse.json();
 
             if (!requestsResponse.ok || !requestsResult.success) {
                 throw new Error(requestsResult.message || "Could not load purchase requests.");
@@ -92,11 +94,30 @@
 
             const requests = requestsResult.requests;
             const favorites = favoritesResult.success ? favoritesResult.favorites : [];
+            const activities = activitiesResult.success ? activitiesResult.activities : [];
 
-            document.getElementById("myActivityCount").textContent = 0;
+            document.getElementById("myActivityCount").textContent = activities.length;
             document.getElementById("myRequestCount").textContent = requests.length;
             document.getElementById("myAppointmentCount").textContent = requests.filter(item => item.status === "Appointment Scheduled").length;
             document.getElementById("myFavoriteCount").textContent = favorites.length;
+
+            const activitiesBox = document.getElementById("myActivitiesList");
+            activitiesBox.innerHTML = activities.length ? `
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>Description</th><th>Date</th></tr>
+                        </thead>
+                        <tbody>
+                            ${activities.map(activity => `
+                                <tr>
+                                    <td>${escapeHtml(activity.type)}</td>
+                                    <td>${escapeHtml(activity.description)}</td>
+                                    <td>${escapeHtml(activity.created_at)}</td>
+                                </tr>`).join("")}
+                        </tbody>
+                    </table>
+                </div>` : '<p class="muted">No activity recorded yet.</p>';
 
             if (!requests.length) {
                 requestBox.innerHTML = `

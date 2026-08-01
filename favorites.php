@@ -69,12 +69,14 @@ if ($carId <= 0) {
 
 if ($method === 'POST') {
     $checkCar = $pdo->prepare(
-        "SELECT id FROM cars WHERE id = ?"
+        "SELECT id, name FROM cars WHERE id = ?"
     );
 
     $checkCar->execute([$carId]);
 
-    if (!$checkCar->fetch()) {
+    $car = $checkCar->fetch(PDO::FETCH_ASSOC);
+
+    if (!$car) {
         http_response_code(404);
 
         echo json_encode([
@@ -92,6 +94,11 @@ if ($method === 'POST') {
 
     $stmt->execute([$userId, $carId]);
 
+    if ($stmt->rowCount() > 0) {
+        $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+        $activity->execute([$userId, 'Favorite', "Added {$car['name']} to favorites", json_encode(['car_id' => $carId], JSON_UNESCAPED_UNICODE)]);
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Car added to your favorites.'
@@ -101,6 +108,10 @@ if ($method === 'POST') {
 }
 
 if ($method === 'DELETE') {
+    $carQuery = $pdo->prepare("SELECT name FROM cars WHERE id = ?");
+    $carQuery->execute([$carId]);
+    $car = $carQuery->fetch(PDO::FETCH_ASSOC);
+
     $stmt = $pdo->prepare(
         "DELETE FROM favorites
          WHERE user_id = ?
@@ -108,6 +119,11 @@ if ($method === 'DELETE') {
     );
 
     $stmt->execute([$userId, $carId]);
+
+    if ($stmt->rowCount() > 0 && $car) {
+        $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
+        $activity->execute([$userId, 'Favorite', "Removed {$car['name']} from favorites", json_encode(['car_id' => $carId], JSON_UNESCAPED_UNICODE)]);
+    }
 
     echo json_encode([
         'success' => true,
