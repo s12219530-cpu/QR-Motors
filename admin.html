@@ -184,7 +184,9 @@
     async function refreshAdminDatabase() {
         await Promise.all([
             loadAdminPurchaseRequests(),
-            loadAdminUsersAndActivities()
+            loadAdminUsersAndActivities(),
+            loadAdminSellRequests(),
+            loadAdminMessages()
         ]);
 
         qrToast("Dashboard refreshed.");
@@ -507,6 +509,103 @@
     }
 
     loadAdminPurchaseRequests();
+</script>
+
+<script>
+    async function loadAdminSellRequests() {
+        const box = document.getElementById("sellRequestsList");
+        box.innerHTML = "<p>Loading sell-car requests...</p>";
+
+        try {
+            const response = await fetch("sell_requests.php", {
+                credentials: "same-origin"
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not load sell-car requests.");
+            }
+
+            const requests = result.requests;
+            if (!requests.length) {
+                box.innerHTML = '<p class="muted">No sell-car requests yet.</p>';
+                return;
+            }
+
+            box.innerHTML = requests.map(item => `
+                <div class="request-card admin-request-card">
+                    <div class="request-summary">
+                        <h3>${escapeHtml(item.car_name)}</h3>
+                        <p><b>User:</b> ${escapeHtml(item.username)}</p>
+                        <p><b>Brand:</b> ${escapeHtml(item.brand || "—")}</p>
+                        <p><b>Model:</b> ${escapeHtml(item.model || "—")}</p>
+                        <p><b>Year:</b> ${escapeHtml(item.year || "—")}</p>
+                        <p><b>Price:</b> ${Number(item.price).toLocaleString("en-US")} NIS</p>
+                        <p><b>City:</b> ${escapeHtml(item.city || "—")}</p>
+                        <p><b>Status:</b> <span class="status-pill ${statusClass(item.status)}">${escapeHtml(item.status)}</span></p>
+                    </div>
+                    <div class="appointment-box">
+                        <h4>Car Information</h4>
+                        <p><b>Fuel:</b> ${escapeHtml(item.fuel || "—")}</p>
+                        <p><b>Transmission:</b> ${escapeHtml(item.transmission || "—")}</p>
+                        <p><b>Mileage:</b> ${item.mileage === null ? "—" : Number(item.mileage).toLocaleString("en-US") + " km"}</p>
+                        <p><b>Phone:</b> ${escapeHtml(item.phone)}</p>
+                        <p><b>Description:</b> ${escapeHtml(item.description || "No description")}</p>
+                        <p><b>Submitted:</b> ${escapeHtml(item.created_at)}</p>
+                    </div>
+                </div>
+            `).join("");
+        } catch (error) {
+            box.innerHTML = `
+                <div class="empty-state">
+                    <h3>Could not load sell-car requests</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadAdminSellRequests);
+</script>
+
+<script>
+    async function loadAdminMessages() {
+        const box = document.getElementById("messagesList");
+        box.innerHTML = "<p>Loading user messages...</p>";
+
+        try {
+            const response = await fetch("messages.php", {
+                credentials: "same-origin"
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not load user messages.");
+            }
+
+            if (!result.messages.length) {
+                box.innerHTML = '<p class="muted">No messages yet.</p>';
+                return;
+            }
+
+            box.innerHTML = result.messages.map(item => `
+                <div class="message-card">
+                    <h3>${escapeHtml(item.subject)}</h3>
+                    <p><b>From:</b> ${escapeHtml(item.username)}</p>
+                    <p><b>Email:</b> ${escapeHtml(item.email)}</p>
+                    <p>${escapeHtml(item.message)}</p>
+                    <p class="muted"><b>Sent:</b> ${escapeHtml(item.created_at)}</p>
+                </div>
+            `).join("");
+        } catch (error) {
+            box.innerHTML = `
+                <div class="empty-state">
+                    <h3>Could not load user messages</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadAdminMessages);
 </script>
 
 </body>
