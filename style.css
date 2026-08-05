@@ -2177,3 +2177,32 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(15,95,87,
         height: 68px;
     }
 }
+.showroom-info {
+    color: #17211f;
+}
+
+.showroom-info p {
+    color: #65716d;
+}
+
+.showroom-details div {
+    color: #17211f;
+}
+
+body.dark-mode .showroom-card {
+    background-color: #13201d;
+    color: #f5f7f4;
+}
+
+body.dark-mode .showroom-info h2 {
+    color: #b8f3c8;
+}
+
+body.dark-mode .showroom-info p {
+    color: #aeb8b4;
+}
+
+body.dark-mode .showroom-details div {
+    background-color: #1c2d29;
+    color: #f5f7f4;
+}
