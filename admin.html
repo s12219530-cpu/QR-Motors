@@ -224,6 +224,26 @@
         <div class="stat-card"><h3>Pending Purchases</h3><p id="adminPendingCount">0</p></div>
         <div class="stat-card"><h3>Appointments</h3><p id="adminAppointmentsCount">0</p></div>
     </div>
+    <div class="admin-section">
+
+        <div class="section-heading-row">
+            <div>
+                <h2>Car Inventory Management</h2>
+                <p class="section-help">
+                    Add cars, update stock, and manage showroom availability.
+                </p>
+            </div>
+
+            <button type="button" onclick="showAddCarForm()">
+                + Add New Car
+            </button>
+        </div>
+
+        <div id="carInventoryList">
+            <p>Loading cars...</p>
+        </div>
+
+    </div>
     <div class="admin-section"><h2>Purchase Requests & Appointments</h2><div id="purchaseRequestsList"></div></div>
     <div class="admin-section"><h2>All User Activity</h2><p class="section-help">The admin sees the complete history for every registered user.</p><div id="allActivitiesList"></div></div>
     <div class="admin-section"><h2>Registered Users</h2><div id="registeredUsersList"></div></div>
