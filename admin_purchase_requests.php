@@ -1,19 +1,15 @@
 <?php
 
 session_start();
-
 header('Content-Type: application/json; charset=utf-8');
-
 require 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
-
     echo json_encode([
         'success' => false,
         'message' => 'You must log in first.'
     ]);
-
     exit;
 }
 
@@ -22,12 +18,10 @@ if (
     $_SESSION['role'] !== 'admin'
 ) {
     http_response_code(403);
-
     echo json_encode([
         'success' => false,
         'message' => 'Admin access is required.'
     ]);
-
     exit;
 }
 
@@ -50,7 +44,9 @@ if ($method === 'GET') {
             cars.brand,
             cars.year,
             cars.price,
-            cars.image
+            cars.image,
+            cars.stock_quantity,
+            cars.is_active
          FROM purchase_requests
          INNER JOIN users
             ON users.id = purchase_requests.user_id
@@ -63,7 +59,6 @@ if ($method === 'GET') {
         'success' => true,
         'requests' => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ]);
-
     exit;
 }
 
@@ -71,7 +66,7 @@ if ($method === 'PATCH') {
     $data = json_decode(
         file_get_contents('php://input'),
         true
-    );
+    ) ?? [];
 
     $requestId = isset($data['request_id'])
         ? (int) $data['request_id']
@@ -106,23 +101,19 @@ if ($method === 'PATCH') {
 
     if ($requestId <= 0) {
         http_response_code(400);
-
         echo json_encode([
             'success' => false,
             'message' => 'Invalid request ID.'
         ]);
-
         exit;
     }
 
     if (!in_array($status, $allowedStatuses, true)) {
         http_response_code(400);
-
         echo json_encode([
             'success' => false,
             'message' => 'Invalid request status.'
         ]);
-
         exit;
     }
 
@@ -131,70 +122,160 @@ if ($method === 'PATCH') {
         (!$appointmentDate || !$appointmentTime)
     ) {
         http_response_code(400);
-
         echo json_encode([
             'success' => false,
             'message' => 'Appointment date and time are required.'
         ]);
-
         exit;
     }
 
-    $checkRequest = $pdo->prepare(
-        "SELECT purchase_requests.user_id, cars.name AS car_name
-         FROM purchase_requests
-         INNER JOIN cars ON cars.id = purchase_requests.car_id
-         WHERE purchase_requests.id = ?"
-    );
+    try {
+        $pdo->beginTransaction();
 
-    $checkRequest->execute([$requestId]);
+        $checkRequest = $pdo->prepare(
+            "SELECT
+                purchase_requests.user_id,
+                purchase_requests.car_id,
+                purchase_requests.status AS current_status,
+                cars.name AS car_name,
+                cars.stock_quantity
+             FROM purchase_requests
+             INNER JOIN cars
+                ON cars.id = purchase_requests.car_id
+             WHERE purchase_requests.id = ?
+             FOR UPDATE"
+        );
 
-    $request = $checkRequest->fetch(PDO::FETCH_ASSOC);
+        $checkRequest->execute([$requestId]);
+        $request = $checkRequest->fetch(PDO::FETCH_ASSOC);
 
-    if (!$request) {
-        http_response_code(404);
+        if (!$request) {
+            $pdo->rollBack();
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Purchase request not found.'
+            ]);
+            exit;
+        }
 
-        echo json_encode([
-            'success' => false,
-            'message' => 'Purchase request not found.'
+        $oldStatus = $request['current_status'];
+        $inventoryChanged = false;
+        $inventoryMessage = '';
+
+        /*
+         * Stock is reduced only when the sale is actually completed.
+         * Re-clicking Complete does not reduce stock again.
+         */
+        if ($status === 'Completed' && $oldStatus !== 'Completed') {
+            if ((int) $request['stock_quantity'] <= 0) {
+                $pdo->rollBack();
+                http_response_code(409);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'This car is out of stock. The purchase cannot be completed.'
+                ]);
+                exit;
+            }
+
+            $stockUpdate = $pdo->prepare(
+                "UPDATE cars
+                 SET stock_quantity = stock_quantity - 1
+                 WHERE id = ?
+                   AND stock_quantity > 0"
+            );
+
+            $stockUpdate->execute([(int) $request['car_id']]);
+
+            if ($stockUpdate->rowCount() !== 1) {
+                $pdo->rollBack();
+                http_response_code(409);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Could not reduce stock because the car is no longer available.'
+                ]);
+                exit;
+            }
+
+            $inventoryChanged = true;
+            $inventoryMessage = ' Stock decreased by 1.';
+        }
+
+        /*
+         * If a Completed request is changed back to another status,
+         * the previously deducted unit is returned to inventory.
+         */
+        if ($oldStatus === 'Completed' && $status !== 'Completed') {
+            $stockRestore = $pdo->prepare(
+                "UPDATE cars
+                 SET stock_quantity = stock_quantity + 1
+                 WHERE id = ?"
+            );
+
+            $stockRestore->execute([(int) $request['car_id']]);
+
+            $inventoryChanged = true;
+            $inventoryMessage = ' Stock restored by 1.';
+        }
+
+        $stmt = $pdo->prepare(
+            "UPDATE purchase_requests
+             SET
+                status = ?,
+                appointment_date = ?,
+                appointment_time = ?,
+                admin_note = ?,
+                updated_at = CURRENT_TIMESTAMP
+             WHERE id = ?"
+        );
+
+        $stmt->execute([
+            $status,
+            $appointmentDate,
+            $appointmentTime,
+            $adminNote,
+            $requestId
         ]);
 
+        $activity = $pdo->prepare(
+            "INSERT INTO activities
+                (user_id, type, description, metadata)
+             VALUES (?, ?, ?, ?)"
+        );
+
+        $activity->execute([
+            (int) $request['user_id'],
+            'Admin Update',
+            "Purchase request for {$request['car_name']} changed to $status" . $inventoryMessage,
+            json_encode([
+                'request_id' => $requestId,
+                'car_id' => (int) $request['car_id'],
+                'previous_status' => $oldStatus,
+                'status' => $status,
+                'inventory_changed' => $inventoryChanged
+            ], JSON_UNESCAPED_UNICODE)
+        ]);
+
+        $pdo->commit();
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Purchase request updated successfully.' . $inventoryMessage
+        ]);
+        exit;
+
+    } catch (PDOException $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database error while updating the purchase request.'
+        ]);
         exit;
     }
-
-    $stmt = $pdo->prepare(
-        "UPDATE purchase_requests
-         SET
-            status = ?,
-            appointment_date = ?,
-            appointment_time = ?,
-            admin_note = ?,
-            updated_at = CURRENT_TIMESTAMP
-         WHERE id = ?"
-    );
-
-    $stmt->execute([
-        $status,
-        $appointmentDate,
-        $appointmentTime,
-        $adminNote,
-        $requestId
-    ]);
-
-    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
-    $activity->execute([
-        (int) $request['user_id'],
-        'Admin Update',
-        "Purchase request for {$request['car_name']} changed to $status",
-        json_encode(['request_id' => $requestId, 'status' => $status], JSON_UNESCAPED_UNICODE)
-    ]);
-
-    echo json_encode([
-        'success' => true,
-        'message' => 'Purchase request updated successfully.'
-    ]);
-
-    exit;
 }
 
 http_response_code(405);

@@ -1,19 +1,15 @@
 <?php
 
 session_start();
-
 header('Content-Type: application/json; charset=utf-8');
-
 require 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
-
     echo json_encode([
         'success' => false,
         'message' => 'You must log in first.'
     ]);
-
     exit;
 }
 
@@ -35,7 +31,9 @@ if ($method === 'GET') {
             cars.brand,
             cars.year,
             cars.price,
-            cars.image
+            cars.image,
+            cars.stock_quantity,
+            cars.is_active
          FROM purchase_requests
          INNER JOIN cars
             ON cars.id = purchase_requests.car_id
@@ -49,7 +47,6 @@ if ($method === 'GET') {
         'success' => true,
         'requests' => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ]);
-
     exit;
 }
 
@@ -57,7 +54,7 @@ if ($method === 'POST') {
     $data = json_decode(
         file_get_contents('php://input'),
         true
-    );
+    ) ?? [];
 
     $carId = isset($data['car_id'])
         ? (int) $data['car_id']
@@ -65,33 +62,50 @@ if ($method === 'POST') {
 
     if ($carId <= 0) {
         http_response_code(400);
-
         echo json_encode([
             'success' => false,
             'message' => 'Invalid car ID.'
         ]);
-
         exit;
     }
 
     $checkCar = $pdo->prepare(
-        "SELECT id, name
+        "SELECT
+            id,
+            name,
+            stock_quantity,
+            is_active
          FROM cars
          WHERE id = ?"
     );
 
     $checkCar->execute([$carId]);
-
     $car = $checkCar->fetch(PDO::FETCH_ASSOC);
 
     if (!$car) {
         http_response_code(404);
-
         echo json_encode([
             'success' => false,
             'message' => 'Car not found.'
         ]);
+        exit;
+    }
 
+    if ((int) $car['is_active'] !== 1) {
+        http_response_code(409);
+        echo json_encode([
+            'success' => false,
+            'message' => 'This car is currently not available for purchase.'
+        ]);
+        exit;
+    }
+
+    if ((int) $car['stock_quantity'] <= 0) {
+        http_response_code(409);
+        echo json_encode([
+            'success' => false,
+            'message' => 'This car is currently out of stock.'
+        ]);
         exit;
     }
 
@@ -99,8 +113,8 @@ if ($method === 'POST') {
         "SELECT id
          FROM purchase_requests
          WHERE user_id = ?
-         AND car_id = ?
-         AND status NOT IN ('Rejected', 'Completed')
+           AND car_id = ?
+           AND status NOT IN ('Rejected', 'Completed')
          LIMIT 1"
     );
 
@@ -111,21 +125,20 @@ if ($method === 'POST') {
 
     if ($checkRequest->fetch()) {
         http_response_code(409);
-
         echo json_encode([
             'success' => false,
             'message' => 'You already have an active request for this car.'
         ]);
-
         exit;
     }
 
     $stmt = $pdo->prepare(
-        "INSERT INTO purchase_requests (
-            user_id,
-            car_id,
-            status
-         )
+        "INSERT INTO purchase_requests
+            (
+                user_id,
+                car_id,
+                status
+            )
          VALUES (?, ?, 'Pending')"
     );
 
@@ -135,15 +148,28 @@ if ($method === 'POST') {
     ]);
 
     $requestId = (int) $pdo->lastInsertId();
-    $activity = $pdo->prepare("INSERT INTO activities (user_id, type, description, metadata) VALUES (?, ?, ?, ?)");
-    $activity->execute([$userId, 'Purchase Request', "Requested to buy {$car['name']}", json_encode(['request_id' => $requestId, 'car_id' => $carId], JSON_UNESCAPED_UNICODE)]);
+
+    $activity = $pdo->prepare(
+        "INSERT INTO activities
+            (user_id, type, description, metadata)
+         VALUES (?, ?, ?, ?)"
+    );
+
+    $activity->execute([
+        $userId,
+        'Purchase Request',
+        "Requested to buy {$car['name']}",
+        json_encode([
+            'request_id' => $requestId,
+            'car_id' => $carId
+        ], JSON_UNESCAPED_UNICODE)
+    ]);
 
     echo json_encode([
         'success' => true,
         'message' => 'Your purchase request was sent successfully.',
         'request_id' => $requestId
     ]);
-
     exit;
 }
 

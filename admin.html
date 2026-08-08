@@ -1,6 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Dashboard - QR Motors</title><link rel="stylesheet" href="style.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - QR Motors</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .inventory-form {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #d8e2e6;
+            border-radius: 12px;
+            background: #f8fbfc;
+        }
+        .inventory-form.hidden { display: none; }
+        .inventory-form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .inventory-form-grid input,
+        .inventory-form-grid select { width: 100%; }
+        .inventory-form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .inventory-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .inventory-actions button { padding: 8px 10px; }
+        .stock-zero { color: #b91c1c; font-weight: 700; }
+        .stock-ok { color: #047857; font-weight: 700; }
+        @media (max-width: 900px) {
+            .inventory-form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
 <script>
     async function loadAdminUsersAndActivities() {
         try {
@@ -183,6 +222,7 @@
 
     async function refreshAdminDatabase() {
         await Promise.all([
+            loadAdminCars(),
             loadAdminPurchaseRequests(),
             loadAdminUsersAndActivities(),
             loadAdminSellRequests(),
@@ -225,25 +265,55 @@
         <div class="stat-card"><h3>Appointments</h3><p id="adminAppointmentsCount">0</p></div>
     </div>
     <div class="admin-section">
-
         <div class="section-heading-row">
             <div>
                 <h2>Car Inventory Management</h2>
-                <p class="section-help">
-                    Add cars, update stock, and manage showroom availability.
-                </p>
+                <p class="section-help">Add cars, update stock, and manage showroom availability.</p>
             </div>
-
-            <button type="button" onclick="showAddCarForm()">
-                + Add New Car
-            </button>
+            <button type="button" onclick="showAddCarForm()">+ Add New Car</button>
         </div>
 
-        <div id="carInventoryList">
-            <p>Loading cars...</p>
-        </div>
+        <form id="adminCarForm" class="inventory-form hidden" onsubmit="saveAdminCar(event)">
+            <input type="hidden" id="inventoryCarId">
+            <h3 id="inventoryFormTitle">Add New Car</h3>
+            <div class="inventory-form-grid">
+                <input id="inventoryName" type="text" placeholder="Car name" required>
+                <input id="inventoryBrand" type="text" placeholder="Brand" required>
+                <input id="inventoryYear" type="number" min="1950" max="2026" placeholder="Year" required>
 
+                <input id="inventoryCategory" type="text" placeholder="Category" required>
+                <select id="inventoryFuel" required>
+                    <option value="">Fuel Type</option>
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>Hybrid</option>
+                    <option>Electric</option>
+                </select>
+                <select id="inventoryGear" required>
+                    <option value="">Transmission</option>
+                    <option>Automatic</option>
+                    <option>Manual</option>
+                </select>
+
+                <input id="inventoryMileage" type="number" min="0" max="1000000" placeholder="Mileage (km)" required>
+                <input id="inventoryPrice" type="number" min="0" step="1000" placeholder="Price (NIS)" required>
+                <input id="inventoryImage" type="text" placeholder="Image key, e.g. ferrari-488" required>
+
+                <input id="inventoryStock" type="number" min="0" value="1" placeholder="Stock quantity" required>
+                <select id="inventoryActive" required>
+                    <option value="1">Active / Visible</option>
+                    <option value="0">Hidden</option>
+                </select>
+            </div>
+            <div class="inventory-form-actions">
+                <button type="submit">Save Car</button>
+                <button type="button" class="secondary-btn" onclick="hideAdminCarForm()">Cancel</button>
+            </div>
+        </form>
+
+        <div id="carInventoryList"><p>Loading cars...</p></div>
     </div>
+    
     <div class="admin-section"><h2>Purchase Requests & Appointments</h2><div id="purchaseRequestsList"></div></div>
     <div class="admin-section"><h2>All User Activity</h2><p class="section-help">The admin sees the complete history for every registered user.</p><div id="allActivitiesList"></div></div>
     <div class="admin-section"><h2>Registered Users</h2><div id="registeredUsersList"></div></div>
@@ -262,6 +332,216 @@
 </script>
 
 <script src="premium.js"></script>
+
+<script>
+    let adminCarsCache = [];
+
+    async function loadAdminCars() {
+        const box = document.getElementById("carInventoryList");
+        if (!box) return;
+
+        box.innerHTML = "<p>Loading cars...</p>";
+
+        try {
+            const response = await fetch("admin_cars.php", {
+                method: "GET",
+                credentials: "same-origin"
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not load car inventory.");
+            }
+
+            adminCarsCache = result.cars || [];
+            displayAdminCars(adminCarsCache);
+        } catch (error) {
+            box.innerHTML = `
+                <div class="empty-state">
+                    <h3>Could not load inventory</h3>
+                    <p>${escapeHtml(error.message)}</p>
+                </div>`;
+        }
+    }
+
+    function displayAdminCars(cars) {
+        const box = document.getElementById("carInventoryList");
+
+        if (!cars.length) {
+            box.innerHTML = '<p class="muted">No cars found in inventory.</p>';
+            return;
+        }
+
+        box.innerHTML = `
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Car</th>
+                            <th>Year</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cars.map(car => {
+                            const stock = Number(car.stock_quantity || 0);
+                            const active = Number(car.is_active) === 1;
+                            return `
+                                <tr>
+                                    <td>${Number(car.id)}</td>
+                                    <td>
+                                        <b>${escapeHtml(car.name)}</b><br>
+                                        <span class="muted">${escapeHtml(car.brand)} · ${escapeHtml(car.category)}</span>
+                                    </td>
+                                    <td>${escapeHtml(car.year)}</td>
+                                    <td>${Number(car.price).toLocaleString("en-US")} NIS</td>
+                                    <td><span class="${stock > 0 ? "stock-ok" : "stock-zero"}">${stock}</span></td>
+                                    <td>
+                                        <span class="status-pill ${active ? "approved" : "rejected"}">
+                                            ${active ? (stock > 0 ? "Available" : "Out of Stock") : "Hidden"}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="inventory-actions">
+                                            <button type="button" onclick="editAdminCar(${Number(car.id)})">Edit</button>
+                                            <button type="button" onclick="changeAdminCarStock(${Number(car.id)}, 1)">+1 Stock</button>
+                                            <button type="button" class="secondary-btn" onclick="changeAdminCarStock(${Number(car.id)}, -1)" ${stock <= 0 ? "disabled" : ""}>-1 Stock</button>
+                                            <button type="button" class="${active ? "delete-btn" : "approve-btn"}" onclick="toggleAdminCar(${Number(car.id)}, ${active ? 0 : 1})">
+                                                ${active ? "Hide" : "Show"}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                        }).join("")}
+                    </tbody>
+                </table>
+            </div>`;
+    }
+
+    function showAddCarForm() {
+        document.getElementById("adminCarForm").reset();
+        document.getElementById("inventoryCarId").value = "";
+        document.getElementById("inventoryStock").value = "1";
+        document.getElementById("inventoryActive").value = "1";
+        document.getElementById("inventoryFormTitle").textContent = "Add New Car";
+        document.getElementById("adminCarForm").classList.remove("hidden");
+        document.getElementById("inventoryName").focus();
+    }
+
+    function hideAdminCarForm() {
+        document.getElementById("adminCarForm").classList.add("hidden");
+    }
+
+    function editAdminCar(carId) {
+        const car = adminCarsCache.find(item => Number(item.id) === Number(carId));
+        if (!car) return;
+
+        document.getElementById("inventoryCarId").value = car.id;
+        document.getElementById("inventoryName").value = car.name || "";
+        document.getElementById("inventoryBrand").value = car.brand || "";
+        document.getElementById("inventoryYear").value = car.year || "";
+        document.getElementById("inventoryCategory").value = car.category || "";
+        document.getElementById("inventoryFuel").value = car.fuel || "";
+        document.getElementById("inventoryGear").value = car.gear || "";
+        document.getElementById("inventoryMileage").value = car.mileage || 0;
+        document.getElementById("inventoryPrice").value = car.price || 0;
+        document.getElementById("inventoryImage").value = car.image || "";
+        document.getElementById("inventoryStock").value = car.stock_quantity || 0;
+        document.getElementById("inventoryActive").value = Number(car.is_active) === 1 ? "1" : "0";
+        document.getElementById("inventoryFormTitle").textContent = "Edit Car";
+        document.getElementById("adminCarForm").classList.remove("hidden");
+        document.getElementById("adminCarForm").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    async function saveAdminCar(event) {
+        event.preventDefault();
+
+        const carId = Number(document.getElementById("inventoryCarId").value || 0);
+        const data = {
+            id: carId,
+            name: document.getElementById("inventoryName").value.trim(),
+            brand: document.getElementById("inventoryBrand").value.trim(),
+            year: Number(document.getElementById("inventoryYear").value),
+            category: document.getElementById("inventoryCategory").value.trim(),
+            fuel: document.getElementById("inventoryFuel").value,
+            gear: document.getElementById("inventoryGear").value,
+            mileage: Number(document.getElementById("inventoryMileage").value),
+            price: Number(document.getElementById("inventoryPrice").value),
+            image: document.getElementById("inventoryImage").value.trim(),
+            stock_quantity: Number(document.getElementById("inventoryStock").value),
+            is_active: Number(document.getElementById("inventoryActive").value)
+        };
+
+        try {
+            const response = await fetch("admin_cars.php", {
+                method: carId ? "PATCH" : "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not save car.");
+            }
+
+            qrToast(result.message);
+            hideAdminCarForm();
+            await loadAdminCars();
+        } catch (error) {
+            qrToast(error.message, "error");
+        }
+    }
+
+    async function changeAdminCarStock(carId, change) {
+        const car = adminCarsCache.find(item => Number(item.id) === Number(carId));
+        if (!car) return;
+
+        const newStock = Math.max(0, Number(car.stock_quantity || 0) + Number(change));
+
+        try {
+            const response = await fetch("admin_cars.php", {
+                method: "PATCH",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: carId, stock_quantity: newStock })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not update stock.");
+            }
+            qrToast(result.message);
+            await loadAdminCars();
+        } catch (error) {
+            qrToast(error.message, "error");
+        }
+    }
+
+    async function toggleAdminCar(carId, isActive) {
+        try {
+            const response = await fetch("admin_cars.php", {
+                method: "PATCH",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: carId, is_active: Number(isActive) })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not update car visibility.");
+            }
+            qrToast(result.message);
+            await loadAdminCars();
+        } catch (error) {
+            qrToast(error.message, "error");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadAdminCars);
+</script>
 
 <script>
     async function loadAdminPurchaseRequests() {
@@ -521,7 +801,10 @@
 
             qrToast(result.message);
 
-            await loadAdminPurchaseRequests();
+            await Promise.all([
+                loadAdminPurchaseRequests(),
+                loadAdminCars()
+            ]);
 
         } catch (error) {
             qrToast(error.message);
@@ -603,7 +886,10 @@
                 throw new Error(result.message || "Could not update sell-car request.");
             }
             qrToast(result.message);
-            await loadAdminSellRequests();
+            await Promise.all([
+                loadAdminSellRequests(),
+                loadAdminCars()
+            ]);
         } catch (error) {
             qrToast(error.message);
         }
